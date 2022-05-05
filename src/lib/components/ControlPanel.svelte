@@ -76,15 +76,12 @@
     }
 
     &-type-selector {
-      align-self: stretch;
       margin: 8px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       gap: 8px 8px;
 
       &__item {
-        flex: 1 0 auto;
         outline: none;
         border: none;
         background-color: white;

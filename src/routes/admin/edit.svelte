@@ -37,6 +37,7 @@
   <Board
     {...data}
     bind:type
+    clickable={true}
     on:clickCell={handleEditCell}
     on:clickHorizontalWall={handleEditHorizontalWall}
     on:clickVerticalWall={handleEditVerticalWall}
@@ -48,5 +49,6 @@
   .container {
     display: flex;
     flex-direction: row;
+    height: 100%;
   }
 </style>
