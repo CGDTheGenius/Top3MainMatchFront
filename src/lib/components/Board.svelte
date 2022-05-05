@@ -6,15 +6,11 @@
 
   const dispatch = createEventDispatcher()
 
-  export const clickable = false
+  export let clickable = false
   export let board = [[]]
   export let hWalls = [[]]
   export let vWalls = [[]]
   export let type
-
-  let width
-  let height
-  $: minSize = Math.min(width, height)
 
   $: {
     board.forEach((cells) => {
@@ -59,7 +55,7 @@
   }
 </script>
 
-<div class="board-panel" bind:clientWidth={width} bind:clientHeight={height}>
+<div class="board-panel">
   <RatioElement>
     <svg class="board-svg" viewBox="0 0 1 1">
       <!-- Horizontal lines -->
