@@ -2,20 +2,7 @@
   import axios from '$lib/utils/axios.js'
 
   import ControlPanel from '$lib/components/ControlPanel.svelte'
-
-  const colorMap = {
-    BLANK: 'white',
-    TREE: 'teal',
-    SAND: 'sandybrown',
-    ROCK: 'gray',
-    GRASS: 'greenyellow',
-    RED: 'red',
-    BLUE: 'blue',
-    GREEN: 'green',
-    YELLOW: 'yellow',
-    VIOLET: 'violet',
-    TOWER: 'skyblue',
-  }
+  import { colorMap } from '$lib/utils/utils'
 
   $: board = [[]]
   $: hWalls = [[]]
@@ -153,7 +140,7 @@
             x1={padding + unit * hoveredCell.y}
             y2={padding + unit * hoveredCell.x}
             x2={padding + unit * (hoveredCell.y + 1)}
-            stroke="black"
+            stroke="#44AAFFAA"
             stroke-width={lineWidth}
           />
           <rect
@@ -170,7 +157,7 @@
             x1={padding + unit * hoveredCell.y}
             y2={padding + unit * hoveredCell.x}
             x2={padding + unit * hoveredCell.y}
-            stroke="black"
+            stroke="#44AAFFAA"
             stroke-width={lineWidth}
           />
           <rect
@@ -206,10 +193,9 @@
   .container {
     display: flex;
     flex-direction: row;
-    background-color: teal;
   }
   .board-panel {
-    flex: 1 0 0;
-    background-color: aliceblue;
+    flex: 1 0 auto;
+    background-color: gray;
   }
 </style>
