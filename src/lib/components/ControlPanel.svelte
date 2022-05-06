@@ -1,41 +1,46 @@
 <script>
-  import { labelList } from '$lib/utils/utils'
-
-  import LabelButton from './LabelButton.svelte'
+  import LabelList from './LabelList.svelte'
 
   export let type = null
-  export let clickable = true
-
-  const handleClick = (label) => {
-    if (clickable) {
-      type = label.type
-    }
-  }
 </script>
 
 <div class="control-panel">
-  <div class="control-panel__type-selector">
-    {#each labelList as label}
-      <LabelButton {...label} selected={type === label.type} on:click={() => handleClick(label)}>
-        {label.label}
-      </LabelButton>
-    {/each}
+  <div class="size-controller">
+    <span class="size-controller__label">크기</span>
+    <button class="size-controller__button">&lt;</button>
+    <button class="size-controller__button">&gt;</button>
+  </div>
+  <div class="type-selector">
+    <LabelList bind:type />
   </div>
 </div>
 
 <style lang="scss">
   .control-panel {
-    // flex: 0 1 auto;
     background-color: silver;
-    // display: flex;
     height: 100%;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
+  }
 
-    &__type-selector {
-      margin: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px 8px;
+  .size-controller {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+
+    &__label {
+      font-weight: 700;
+    }
+
+    &__button {
+      font-weight: 700;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
     }
   }
 </style>
