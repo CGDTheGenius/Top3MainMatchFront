@@ -1,8 +1,9 @@
 <script>
   import axios from '$lib/utils/axios.js'
 
-  import ControlPanel from '$lib/components/ControlPanel.svelte'
+  import ControlPanel from '$lib/components/LabelPanel.svelte'
   import Board from '$lib/components/Board.svelte'
+  import LabelPanel from '$lib/components/LabelPanel.svelte'
 
   let data = {}
   let type = 'BLANK'
@@ -42,7 +43,7 @@
     on:clickHorizontalWall={handleEditHorizontalWall}
     on:clickVerticalWall={handleEditVerticalWall}
   />
-  <ControlPanel bind:type />
+  <LabelPanel bind:type controllable={true} />
 </div>
 
 <style lang="scss">

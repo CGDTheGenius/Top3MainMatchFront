@@ -1,6 +1,6 @@
 <script>
   import Board from '$lib/components/Board.svelte'
-  import LabelList from '$lib/components/LabelList.svelte'
+  import LabelPanel from '$lib/components/LabelPanel.svelte'
   import axios from '$lib/utils/axios.js'
 
   let data = {}
@@ -15,7 +15,7 @@
 
 <div class="container">
   <Board {...data} />
-  <LabelList clickable={false} />
+  <LabelPanel controllable={false} />
 </div>
 
 <style lang="scss">

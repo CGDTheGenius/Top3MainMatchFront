@@ -25,17 +25,22 @@ export const colorMap = {
   TOWER: 'skyblue',
 }
 
-export const labelList = [
-  { type: 'BLANK', label: '빈칸', iconComponent: BlankCell },
+export const cellTypeList = [
   { type: 'TREE', label: '나무', iconComponent: TreeCell },
   { type: 'WATER', label: '물', iconComponent: WaterCell },
   { type: 'SAND', label: '모래', iconComponent: SandCell },
   { type: 'ROCK', label: '바위', iconComponent: RockCell },
   { type: 'GRASS', label: '풀', iconComponent: GrassCell },
-  { type: 'TOWER', label: '통신탑', iconComponent: TowerCell },
+]
+
+export const itemTypeList = [
   { type: 'RED', label: '빨강 유물', iconComponent: RedArtifact },
   { type: 'BLUE', label: '파랑 유물', iconComponent: BlueArtifact },
   { type: 'GREEN', label: '초록 유물', iconComponent: GreenArtifact },
   { type: 'YELLOW', label: '노랑 유물', iconComponent: YellowArtifact },
   { type: 'VIOLET', label: '보라 유물', iconComponent: VioletArtifact },
+  { type: 'TOWER', label: '통신탑', iconComponent: TowerCell },
 ]
+
+export const isCellType = (type) => cellTypeList.find((cell) => cell.type === type)
+export const isItemType = (type) => itemTypeList.find((item) => item.type === type)

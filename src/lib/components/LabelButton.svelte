@@ -43,6 +43,7 @@
     &__label {
       flex: 1 1 auto;
       margin: 0 8px;
+      white-space: pre;
     }
   }
 

@@ -1,8 +1,8 @@
 <script>
-  import { labelList } from '$lib/utils/utils'
-
   import LabelButton from './LabelButton.svelte'
 
+  export let groupName = ''
+  export let labelList = []
   export let type = null
   export let clickable = true
 
@@ -14,6 +14,9 @@
 </script>
 
 <div class="container">
+  <div class="group-name">
+    {groupName}
+  </div>
   <div class="label-list">
     {#each labelList as label}
       <LabelButton {...label} selected={type === label.type} on:click={() => handleClick(label)}>
@@ -26,13 +29,19 @@
 <style lang="scss">
   .container {
     background-color: silver;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .group-name {
+    font-weight: 700;
+    align-self: center;
   }
 
   .label-list {
     margin: 8px;
     display: flex;
     flex-direction: column;
-    gap: 8px 8px;
+    gap: 8px;
   }
 </style>

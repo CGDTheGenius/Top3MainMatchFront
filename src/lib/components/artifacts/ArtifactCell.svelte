@@ -3,5 +3,5 @@
 </script>
 
 <svg viewBox="0 0 100 100">
-  <rect x="0" y="0" width="100" height="100" fill={color} />
+  <path d="M 0 50 L 50 0 L 100 50 L 50 100 Z" fill={color} />
 </svg>
