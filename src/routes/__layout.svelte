@@ -1,6 +1,12 @@
 <!-- <header>
   <h1>더지니어스 Top3 메인 매치 : 유적 탐험 레이스</h1>
 </header> -->
+<script>
+  import login from '$lib/utils/login'
+  import { onMount } from 'svelte'
+
+  onMount(login)
+</script>
 
 <div class="container">
   <slot />

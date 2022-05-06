@@ -2,15 +2,20 @@
   import Board from '$lib/components/Board.svelte'
   import LabelPanel from '$lib/components/LabelPanel.svelte'
   import axios from '$lib/utils/axios.js'
+  import login from '$lib/utils/login'
+  import { onMount } from 'svelte'
 
   let data = {}
 
   const fetchBoard = async () => {
-    const res = await axios.get('/admin/board')
+    const res = await axios.get('/board/view')
     data = res.data
   }
 
-  setInterval(fetchBoard, 1000)
+  onMount(() => {
+    login()
+    setInterval(fetchBoard, 1000)
+  })
 </script>
 
 <div class="container">

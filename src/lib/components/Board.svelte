@@ -7,21 +7,21 @@
   const dispatch = createEventDispatcher()
 
   export let clickable = false
-  export let board = [[]]
+  export let cells = [[]]
   export let hWalls = [[]]
   export let vWalls = [[]]
   export let type
 
   $: {
-    board.forEach((cells) => {
-      cells.forEach((cell) => {
+    cells.forEach((row) => {
+      row.forEach((cell) => {
         cell.color = colorMap[cell.type] ?? 'gray'
       })
     })
   }
 
   const padding = 0.05
-  $: size = board.length
+  $: size = cells.length
   $: unit = (1 - padding * 2) / size
   $: lineWidth = unit * 0.1
 
@@ -81,7 +81,7 @@
         />
       {/each}
       <!-- Cells -->
-      {#each board as row, i}
+      {#each cells as row, i}
         {#each row as cell, j}
           <rect
             y={padding + unit * cell.x}
