@@ -8,12 +8,12 @@
   let player = {
     x: 0,
     y: 0,
-    tasks: [],
+    undoneTask: null,
+    lastTask: null,
     unlocked: '',
   }
-  let undoneTask = null
-  $: undoneTask = player.tasks.find((task) => !task.done)
-  $: undoneTaskSummary = getUndoneTaskSummary(undoneTask)
+  $: undoneTaskSummary = getUndoneTaskSummary(player.undoneTask)
+  $: lastTaskSummary = getLastTaskSummary(player.lastTask)
 
   const fetchSight = async () => {
     const res = await axios.get('board/players/sight')
@@ -26,40 +26,77 @@
 
   const fetchPlayer = async () => {
     const res = await axios.get('board/players/detail')
-    player = res.data
+    player = {
+      ...res.data,
+      undoneTask: res.data.undone_task,
+      lastTask: res.data.last_task,
+    }
   }
 
   onMount(() => {
     login()
     fetchSight()
     fetchPlayer()
+    setInterval(() => {
+      fetchSight()
+      fetchPlayer()
+    }, 5000)
   })
 
-  const getUndoneTaskSummary = (undoneTask) => {
-    if (!undoneTask) return '동작을 예약해주세요'
-    if (undoneTask.type === 'MOVE') {
-      const step = parseInt(undoneTask.value)
+  const getUndoneTaskSummary = (task) => {
+    if (!task) return '동작을 예약해주세요'
+    if (task.type === 'MOVE') {
+      const step = parseInt(task.value)
       if (step > 0) return `앞으로 ${step}칸 이동 예약됨`
       else return `뒤로 ${Math.abs(step)}칸 이동 예약됨`
     }
-    if (undoneTask.type === 'ROTATE') {
-      const step = parseInt(undoneTask.value)
+    if (task.type === 'ROTATE') {
+      const step = parseInt(task.value)
       if (step > 0) {
         return `오른쪽으로 90도 회전 예약됨`
       } else {
         return `왼쪽으로 90도 회전 예약됨`
       }
     }
-    if (undoneTask.type === 'COMMUNICATE') {
-      return `조력자에게 '${undoneTask.value}' 전달 예약됨`
+    if (task.type === 'COMMUNICATE') {
+      return `조력자에게 '${task.value}' 전달 예약됨`
     }
-    if (undoneTask.type === 'NOOP') {
+    if (task.type === 'NOOP') {
       return '아무 행동 안함'
     }
     return '알 수 없는 행동'
   }
 
+  const getLastTaskSummary = (task) => {
+    if (!task) return ''
+    const errorMessage = !task.error ? ' 성공' : ' 실패: ' + task.error
+    if (task.type === 'MOVE') {
+      const step = parseInt(task.value)
+      if (step > 0) return `앞으로 ${step}칸 이동` + errorMessage
+      else return `뒤로 ${Math.abs(step)}칸 이동` + errorMessage
+    }
+    if (task.type === 'ROTATE') {
+      const step = parseInt(task.value)
+      if (step > 0) {
+        return `오른쪽으로 90도 회전` + errorMessage
+      } else {
+        return `왼쪽으로 90도 회전` + errorMessage
+      }
+    }
+    if (task.type === 'COMMUNICATE') {
+      return `조력자에게 '${task.value}' 전달` + errorMessage
+    }
+    if (task.type === 'REVERSE_COMMUNICATE') {
+      return `조력자에게서 '${task.value}' 수신` + errorMessage
+    }
+    if (task.type === 'NOOP') {
+      return ''
+    }
+    return '알 수 없는 행동을 함'
+  }
+
   const handleRegisterTask = async (type, value) => {
+    let undoneTask = player.undoneTask
     if (undoneTask && undoneTask.type === type && undoneTask.type === 'MOVE') {
       if (parseInt(undoneTask.value) * value >= 0) {
         if (Math.abs(value + parseInt(undoneTask.value)) > 10) {
@@ -78,6 +115,7 @@
       type,
       value,
     }
+    player.undoneTask = undoneTask
     await axios.post('board/tasks/register', undoneTask)
   }
 
@@ -101,11 +139,14 @@
 </script>
 
 <div class="container">
+  <div class="prompt">
+    <span>{lastTaskSummary}&nbsp;</span>
+  </div>
   <div class="sight">
     <Sight {...sight} {player} />
   </div>
   <div class="prompt">
-    <span>{undoneTaskSummary}</span>
+    <span>{undoneTaskSummary}&nbsp;</span>
   </div>
   <div class="controller">
     <div class="controller-row">
