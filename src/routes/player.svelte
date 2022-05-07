@@ -6,7 +6,10 @@
 
   let sight = {}
   let player = {
+    x: 0,
+    y: 0,
     tasks: [],
+    unlocked: '',
   }
   let undoneTask = null
   $: undoneTask = player.tasks.find((task) => !task.done)

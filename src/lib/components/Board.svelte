@@ -92,7 +92,7 @@
           y1={padding}
           x2={padding + unit * i}
           y2={1 - padding}
-          stroke="black"
+          stroke="gray"
           stroke-width={lineWidth}
           stroke-linecap="round"
         />
@@ -104,7 +104,7 @@
           y1={padding + unit * i}
           x2={1 - padding}
           y2={padding + unit * i}
-          stroke="black"
+          stroke="gray"
           stroke-width={lineWidth}
           stroke-linecap="round"
         />
@@ -158,7 +158,7 @@
             y2={padding + unit * hoveredCell.x}
             x2={padding + unit * (hoveredCell.y + 1)}
             stroke="#44AAFFAA"
-            stroke-width={lineWidth}
+            stroke-width={wallWidth}
             stroke-linecap="round"
           />
           <rect
@@ -176,7 +176,7 @@
             y2={padding + unit * hoveredCell.x}
             x2={padding + unit * hoveredCell.y}
             stroke="#44AAFFAA"
-            stroke-width={lineWidth}
+            stroke-width={wallWidth}
             stroke-linecap="round"
           />
           <rect

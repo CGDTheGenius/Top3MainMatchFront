@@ -5,6 +5,7 @@
   export let player = {
     x: 0,
     y: 0,
+    unlocked: '',
   }
   export let cells = []
   export let items = []
@@ -54,7 +55,7 @@
       y1={padding}
       x2={padding + unit * i}
       y2={1 - padding}
-      stroke="black"
+      stroke="gray"
       stroke-width={lineWidth}
       stroke-linecap="round"
     />
@@ -66,7 +67,7 @@
       y1={padding + unit * i}
       x2={1 - padding}
       y2={padding + unit * i}
-      stroke="black"
+      stroke="gray"
       stroke-width={lineWidth}
       stroke-linecap="round"
     />
@@ -98,6 +99,49 @@
         stroke-linecap="round"
       />
     {/if}
+  {/each}
+  <!-- Artifact Walls -->
+  {#each cells as cell, i}
+    {#each cell.items as item}
+      {#if !player.unlocked.includes(item.type)}
+        <line
+          y1={padding + unit * item.x}
+          x1={padding + unit * item.y}
+          y2={padding + unit * (item.x + 1)}
+          x2={padding + unit * item.y}
+          stroke="black"
+          stroke-width={wallWidth}
+          stroke-linecap="round"
+        />
+        <line
+          y1={padding + unit * item.x}
+          x1={padding + unit * (item.y + 1)}
+          y2={padding + unit * (item.x + 1)}
+          x2={padding + unit * (item.y + 1)}
+          stroke="black"
+          stroke-width={wallWidth}
+          stroke-linecap="round"
+        />
+        <line
+          y1={padding + unit * (item.x + 1)}
+          x1={padding + unit * item.y}
+          y2={padding + unit * (item.x + 1)}
+          x2={padding + unit * (item.y + 1)}
+          stroke="black"
+          stroke-width={wallWidth}
+          stroke-linecap="round"
+        />
+        <line
+          y1={padding + unit * (item.x + 1)}
+          x1={padding + unit * item.y}
+          y2={padding + unit * (item.x + 1)}
+          x2={padding + unit * (item.y + 1)}
+          stroke="black"
+          stroke-width={wallWidth}
+          stroke-linecap="round"
+        />
+      {/if}
+    {/each}
   {/each}
   <!-- Player -->
   <svg y={padding + unit * 1} x={padding + unit * 1} width={unit} height={unit}>
