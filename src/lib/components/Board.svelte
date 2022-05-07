@@ -3,6 +3,7 @@
 
   import { iconMap } from '$lib/utils/utils'
   import RatioElement from './RatioElement.svelte'
+  import Player from './Player.svelte'
 
   const dispatch = createEventDispatcher()
 
@@ -11,12 +12,14 @@
   export let items = []
   export let hWalls = [[]]
   export let vWalls = [[]]
+  export let players = []
   export let type
 
   const padding = 0.05
   $: size = cells.length
   $: unit = (1 - padding * 2) / size
-  $: lineWidth = unit * 0.1
+  $: lineWidth = unit * 0.02
+  $: wallWidth = lineWidth * 5
 
   $: hoveredCell = null
 
@@ -54,30 +57,6 @@
 <div class="board-panel">
   <RatioElement>
     <svg class="board-svg" viewBox="0 0 1 1">
-      <!-- Horizontal lines -->
-      {#each { length: size + 1 } as _, i}
-        <line
-          x1={padding + unit * i}
-          y1={padding}
-          x2={padding + unit * i}
-          y2={1 - padding}
-          stroke="black"
-          stroke-width={lineWidth}
-          stroke-linecap="round"
-        />
-      {/each}
-      <!-- Vertical lines -->
-      {#each { length: size + 1 } as _, i}
-        <line
-          x1={padding}
-          y1={padding + unit * i}
-          x2={1 - padding}
-          y2={padding + unit * i}
-          stroke="black"
-          stroke-width={lineWidth}
-          stroke-linecap="round"
-        />
-      {/each}
       <!-- Cells -->
       {#each cells as row, i}
         {#each row as cell, j}
@@ -106,6 +85,30 @@
           {/each}
         {/each}
       {/each}
+      <!-- Horizontal lines -->
+      {#each { length: size + 1 } as _, i}
+        <line
+          x1={padding + unit * i}
+          y1={padding}
+          x2={padding + unit * i}
+          y2={1 - padding}
+          stroke="black"
+          stroke-width={lineWidth}
+          stroke-linecap="round"
+        />
+      {/each}
+      <!-- Vertical lines -->
+      {#each { length: size + 1 } as _, i}
+        <line
+          x1={padding}
+          y1={padding + unit * i}
+          x2={1 - padding}
+          y2={padding + unit * i}
+          stroke="black"
+          stroke-width={lineWidth}
+          stroke-linecap="round"
+        />
+      {/each}
       <!-- H-Walls -->
       {#each hWalls as row, i}
         {#each row as wall, j}
@@ -116,7 +119,7 @@
               y2={padding + unit * wall.x}
               x2={padding + unit * (wall.y + 1)}
               stroke="black"
-              stroke-width={lineWidth}
+              stroke-width={wallWidth}
               stroke-linecap="round"
             />
           {/if}
@@ -132,11 +135,18 @@
               y2={padding + unit * (wall.x + 1)}
               x2={padding + unit * wall.y}
               stroke="black"
-              stroke-width={lineWidth}
+              stroke-width={wallWidth}
               stroke-linecap="round"
             />
           {/if}
         {/each}
+      {/each}
+
+      <!-- Players -->
+      {#each players as player}
+        <svg y={padding + unit * player.x} x={padding + unit * player.y} width={unit} height={unit}>
+          <Player color={player.color} />
+        </svg>
       {/each}
 
       <!-- Hovered -->
