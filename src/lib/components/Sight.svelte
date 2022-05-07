@@ -39,18 +39,33 @@
 <svg class="board-svg" viewBox="0 0 1 1">
   <!-- Cells -->
   {#each cells as cell, i}
-    <svg y={padding + unit * cell.x} x={padding + unit * cell.y} width={unit} height={unit}>
+    <svg
+      y={padding + unit * (cell.x - player.x + 1)}
+      x={padding + unit * (cell.y - player.y + 1)}
+      width={unit}
+      height={unit}
+    >
       <svelte:component this={iconMap[cell.type]} />
     </svg>
     <!-- Items -->
     {#each cell.items.slice(0, 1) as item}
-      <svg y={padding + unit * item.x} x={padding + unit * item.y} width={unit} height={unit}>
+      <svg
+        y={padding + unit * (item.x - player.x + 1)}
+        x={padding + unit * (item.y - player.y + 1)}
+        width={unit}
+        height={unit}
+      >
         <svelte:component this={iconMap[item.type]} />
       </svg>
     {/each}
     <!-- Item count -->
     {#if cell.items.length > 1}
-      <svg y={padding + unit * cell.x} x={padding + unit * cell.y} width={unit} height={unit}>
+      <svg
+        y={padding + unit * (cell.x - player.x + 1)}
+        x={padding + unit * (cell.y - player.y + 1)}
+        width={unit}
+        height={unit}
+      >
         <ItemCount count={cell.items.length} />
       </svg>
     {/if}
@@ -83,10 +98,10 @@
   {#each hWalls as wall, j}
     {#if wall.closed}
       <line
-        y1={padding + unit * wall.x}
-        x1={padding + unit * wall.y}
-        y2={padding + unit * wall.x}
-        x2={padding + unit * (wall.y + 1)}
+        y1={padding + unit * (wall.x - player.x + 1)}
+        x1={padding + unit * (wall.y - player.y + 1)}
+        y2={padding + unit * (wall.x - player.x + 1)}
+        x2={padding + unit * (wall.y - player.y + 1 + 1)}
         stroke="black"
         stroke-width={wallWidth}
         stroke-linecap="round"
@@ -97,10 +112,10 @@
   {#each vWalls as wall, j}
     {#if wall.closed}
       <line
-        y1={padding + unit * wall.x}
-        x1={padding + unit * wall.y}
-        y2={padding + unit * (wall.x + 1)}
-        x2={padding + unit * wall.y}
+        y1={padding + unit * (wall.x - player.x + 1)}
+        x1={padding + unit * (wall.y - player.y + 1)}
+        y2={padding + unit * (wall.x + 1 - player.x + 1)}
+        x2={padding + unit * (wall.y - player.y + 1)}
         stroke="black"
         stroke-width={wallWidth}
         stroke-linecap="round"
@@ -112,37 +127,37 @@
     {#each cell.items as item}
       {#if !player.unlocked.includes(item.type)}
         <line
-          y1={padding + unit * item.x}
-          x1={padding + unit * item.y}
-          y2={padding + unit * (item.x + 1)}
-          x2={padding + unit * item.y}
+          y1={padding + unit * (item.x - player.x + 1)}
+          x1={padding + unit * (item.y - player.y + 1)}
+          y2={padding + unit * (item.x - player.x + 1 + 1)}
+          x2={padding + unit * (item.y - player.y + 1)}
           stroke="black"
           stroke-width={wallWidth}
           stroke-linecap="round"
         />
         <line
-          y1={padding + unit * item.x}
-          x1={padding + unit * (item.y + 1)}
-          y2={padding + unit * (item.x + 1)}
-          x2={padding + unit * (item.y + 1)}
+          y1={padding + unit * (item.x - player.x + 1)}
+          x1={padding + unit * (item.y - player.y + 1 + 1)}
+          y2={padding + unit * (item.x - player.x + 1 + 1)}
+          x2={padding + unit * (item.y - player.y + 1 + 1)}
           stroke="black"
           stroke-width={wallWidth}
           stroke-linecap="round"
         />
         <line
-          y1={padding + unit * (item.x + 1)}
-          x1={padding + unit * item.y}
-          y2={padding + unit * (item.x + 1)}
-          x2={padding + unit * (item.y + 1)}
+          y1={padding + unit * (item.x - player.x + 1 + 1)}
+          x1={padding + unit * (item.y - player.y + 1)}
+          y2={padding + unit * (item.x - player.x + 1 + 1)}
+          x2={padding + unit * (item.y - player.y + 1 + 1)}
           stroke="black"
           stroke-width={wallWidth}
           stroke-linecap="round"
         />
         <line
-          y1={padding + unit * (item.x + 1)}
-          x1={padding + unit * item.y}
-          y2={padding + unit * (item.x + 1)}
-          x2={padding + unit * (item.y + 1)}
+          y1={padding + unit * (item.x - player.x + 1 + 1)}
+          x1={padding + unit * (item.y - player.y + 1)}
+          y2={padding + unit * (item.x - player.x + 1 + 1)}
+          x2={padding + unit * (item.y - player.y + 1 + 1)}
           stroke="black"
           stroke-width={wallWidth}
           stroke-linecap="round"
@@ -176,7 +191,7 @@
   />
   <!-- Items -->
   {#each circledItems as item}
-    {#if Math.max(item.dx, item.dy) >= 2}
+    {#if Math.max(Math.abs(item.dx), Math.abs(item.dy)) >= 2}
       <svg
         style="filter:url(#dropshadow)"
         y={((item.cx + 1) * (1 - 2 * padding)) / 2 + padding - 0.03}
