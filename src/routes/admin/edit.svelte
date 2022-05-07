@@ -5,31 +5,40 @@
   import LabelPanel from '$lib/components/LabelPanel.svelte'
   import { onMount } from 'svelte'
   import login from '$lib/utils/login'
+  import { isCellType } from '$lib/utils/utils'
 
   let data = {}
   let type = 'BLANK'
 
   const fetchBoard = async () => {
-    try {
-      const res = await axios.get('/board/view')
-      data = {
-        ...res.data,
-        hWalls: [],
-        vWalls: [],
-      }
-    } catch (error) {
-      console.log(error)
+    const res = await axios.get('/board/view')
+    data = {
+      ...res.data,
+      hWalls: [],
+      vWalls: [],
     }
   }
 
   const handleEditCell = async (event) => {
     const x = event.detail.x
     const y = event.detail.y
-    await axios.put(`/board/cells/${x}/${y}`, {
-      ...event.detail,
-      type: type,
-    })
-    fetchBoard()
+    if (isCellType(type)) {
+      await axios
+        .put(`/board/cells/${x}/${y}`, {
+          type,
+          x,
+          y,
+        })
+        .finally(fetchBoard)
+    } else {
+      await axios
+        .post(`/board/items/${x}/${y}`, {
+          type,
+          x,
+          y,
+        })
+        .finally(fetchBoard)
+    }
   }
 
   const handleEditHorizontalWall = async (event) => {

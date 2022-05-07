@@ -60,23 +60,20 @@
         value += parseInt(undoneTask.value)
       }
     }
-    const res = await axios.post('board/tasks/register', {
+    undoneTask = {
       type,
       value,
-    })
-    undoneTask = res.data
+    }
+    await axios.post('board/tasks/register', undoneTask)
   }
 </script>
 
 <div class="container">
-  <div class="prompt">
-    <span>{undoneTaskSummary}</span>
-  </div>
   <div class="sight">
     <Sight {...board} {player} />
   </div>
   <div class="prompt">
-    <span>dsjdlfkjlskdjfjlskdfj</span>
+    <span>{undoneTaskSummary}</span>
   </div>
   <div class="controller">
     <div class="controller-row">
@@ -139,8 +136,7 @@
         flex: 1 0 0;
         border-radius: 8px;
         border: none;
-        background-color: darkgray;
-        color: white;
+        background-color: white;
         box-shadow: 2px 2px 2px 1px black;
       }
     }

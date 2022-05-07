@@ -1,13 +1,14 @@
 <script>
   import { createEventDispatcher } from 'svelte'
 
-  import { colorMap } from '$lib/utils/utils'
+  import { colorMap, iconMap } from '$lib/utils/utils'
   import RatioElement from './RatioElement.svelte'
 
   const dispatch = createEventDispatcher()
 
   export let clickable = false
   export let cells = [[]]
+  export let items = []
   export let hWalls = [[]]
   export let vWalls = [[]]
   export let type
@@ -36,6 +37,7 @@
       x: hoveredCell.x,
       y: hoveredCell.y,
     })
+    hoveredCell = null
   }
 
   const handleClickHorizontalWall = async (cell) => {
@@ -44,6 +46,7 @@
       x: hoveredCell.x,
       y: hoveredCell.y,
     })
+    hoveredCell = null
   }
 
   const handleClickVerticalWall = async (cell) => {
@@ -52,6 +55,7 @@
       x: hoveredCell.x,
       y: hoveredCell.y,
     })
+    hoveredCell = null
   }
 </script>
 
@@ -83,16 +87,29 @@
       <!-- Cells -->
       {#each cells as row, i}
         {#each row as cell, j}
-          <rect
+          <svg
             y={padding + unit * cell.x}
             x={padding + unit * cell.y}
             width={unit}
             height={unit}
-            fill={cell.color}
-            stroke="none"
             on:focus|preventDefault={() => handleHoverCell(cell)}
             on:mouseover|preventDefault={() => handleHoverCell(cell)}
-          />
+          >
+            <svelte:component this={iconMap[cell.type]} />
+          </svg>
+          <!-- Items -->
+          {#each cell.items as item}
+            <svg
+              y={padding + unit * item.x}
+              x={padding + unit * item.y}
+              width={unit}
+              height={unit}
+              on:focus|preventDefault={() => handleHoverCell(item)}
+              on:mouseover|preventDefault={() => handleHoverCell(item)}
+            >
+              <svelte:component this={iconMap[item.type]} />
+            </svg>
+          {/each}
         {/each}
       {/each}
       <!-- H-Walls -->
