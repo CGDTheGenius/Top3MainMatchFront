@@ -7,9 +7,9 @@ import BlankCell from '$lib/components/cells/BlankCell.svelte'
 import GrassCell from '$lib/components/cells/GrassCell.svelte'
 import RockCell from '$lib/components/cells/RockCell.svelte'
 import SandCell from '$lib/components/cells/SandCell.svelte'
-import TowerCell from '$lib/components/cells/TowerCell.svelte'
 import TreeCell from '$lib/components/cells/TreeCell.svelte'
 import WaterCell from '$lib/components/cells/WaterCell.svelte'
+import Tower from '$lib/components/Tower.svelte'
 import HorizontalWall from '$lib/components/walls/HorizontalWall.svelte'
 import VerticalWall from '$lib/components/walls/VerticalWall.svelte'
 
@@ -33,7 +33,7 @@ export const itemTypeList = [
   { type: 'GREEN', label: '초록 유물', iconComponent: GreenArtifact },
   { type: 'YELLOW', label: '노랑 유물', iconComponent: YellowArtifact },
   { type: 'VIOLET', label: '보라 유물', iconComponent: VioletArtifact },
-  { type: 'TOWER', label: '통신탑', iconComponent: TowerCell },
+  { type: 'TOWER', label: '통신탑', iconComponent: Tower },
 ]
 
 export const isCellType = (type) => cellTypeList.find((cell) => cell.type === type)

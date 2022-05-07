@@ -1,5 +1,6 @@
 <script>
   import { iconMap } from '$lib/utils/utils'
+  import ItemCount from './ItemCount.svelte'
   import Player from './Player.svelte'
 
   export let player = {
@@ -42,32 +43,15 @@
       <svelte:component this={iconMap[cell.type]} />
     </svg>
     <!-- Items -->
-    {#each cell.items as item}
+    {#each cell.items.slice(0, 1) as item}
       <svg y={padding + unit * item.x} x={padding + unit * item.y} width={unit} height={unit}>
         <svelte:component this={iconMap[item.type]} />
       </svg>
     {/each}
+    <!-- Item count -->
     {#if cell.items.length > 1}
-      <svg
-        y={padding + unit * cell.x}
-        x={padding + unit * cell.y}
-        width={unit}
-        height={unit}
-        viewBox="0 0 100 100"
-      >
-        <text
-          x="50"
-          y="50"
-          dominant-baseline="middle"
-          text-anchor="middle"
-          fill="white"
-          stroke="black"
-          stroke-width="1"
-          font-weight="700"
-          font-size="30"
-          opacity="0.9"
-          >{cell.items.length}
-        </text>
+      <svg y={padding + unit * cell.x} x={padding + unit * cell.y} width={unit} height={unit}>
+        <ItemCount count={cell.items.length} />
       </svg>
     {/if}
   {/each}

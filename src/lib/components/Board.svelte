@@ -4,6 +4,7 @@
   import { iconMap } from '$lib/utils/utils'
   import RatioElement from './RatioElement.svelte'
   import Player from './Player.svelte'
+import ItemCount from './ItemCount.svelte';
 
   const dispatch = createEventDispatcher()
 
@@ -71,7 +72,7 @@
             <svelte:component this={iconMap[cell.type]} />
           </svg>
           <!-- Items -->
-          {#each cell.items as item}
+          {#each cell.items.slice(0, 1) as item}
             <svg
               y={padding + unit * item.x}
               x={padding + unit * item.y}
@@ -83,6 +84,12 @@
               <svelte:component this={iconMap[item.type]} />
             </svg>
           {/each}
+          <!-- Item count -->
+          {#if cell.items.length > 1}
+            <svg y={padding + unit * cell.x} x={padding + unit * cell.y} width={unit} height={unit}>
+              <ItemCount count={cell.items.length} />
+            </svg>
+          {/if}
         {/each}
       {/each}
       <!-- Horizontal lines -->
