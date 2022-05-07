@@ -37,6 +37,10 @@
     margin: 0;
   }
 
+  * {
+    font-family: 'Nanum Gothic';
+  }
+
   h1 {
     color: white;
     margin-left: 16px;

@@ -1,7 +1,8 @@
 <script>
-  export let color = 'red'
+  export let color = 'gray'
 </script>
 
 <svg viewBox="0 0 100 100" style="filter:url(#dropshadow)">
+  <path d="M 0 0 L 100 100" stroke="transparent" />
   <path d="M 10 50 L 50 10 L 90 50 L 50 90 Z" fill={color} />
 </svg>

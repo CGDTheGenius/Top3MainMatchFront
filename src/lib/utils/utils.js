@@ -1,7 +1,7 @@
 import BlueArtifact from '$lib/components/artifacts/BlueArtifact.svelte'
 import GreenArtifact from '$lib/components/artifacts/GreenArtifact.svelte'
 import RedArtifact from '$lib/components/artifacts/RedArtifact.svelte'
-import VioletArtifact from '$lib/components/artifacts/VioletArtifact.svelte'
+import FakeArtifact from '$lib/components/artifacts/FakeArtifact.svelte'
 import YellowArtifact from '$lib/components/artifacts/YellowArtifact.svelte'
 import BlankCell from '$lib/components/cells/BlankCell.svelte'
 import GrassCell from '$lib/components/cells/GrassCell.svelte'
@@ -32,9 +32,13 @@ export const itemTypeList = [
   { type: 'BLUE', label: '파랑 유물', iconComponent: BlueArtifact },
   { type: 'GREEN', label: '초록 유물', iconComponent: GreenArtifact },
   { type: 'YELLOW', label: '노랑 유물', iconComponent: YellowArtifact },
-  { type: 'VIOLET', label: '보라 유물', iconComponent: VioletArtifact },
+  { type: 'FAKE', label: '가짜 유물', iconComponent: FakeArtifact },
   { type: 'TOWER', label: '통신탑', iconComponent: Tower },
 ]
+
+export const artifactList = itemTypeList.filter((item) =>
+  ['RED', 'BLUE', 'GREEN', 'YELLOW'].includes(item.type)
+)
 
 export const isCellType = (type) => cellTypeList.find((cell) => cell.type === type)
 export const isWallType = (type) => wallTypeList.find((wall) => wall.type === type)

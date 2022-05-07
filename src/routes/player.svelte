@@ -3,6 +3,7 @@
   import axios from '$lib/utils/axios'
   import { onMount } from 'svelte'
   import login from '$lib/utils/login'
+  import ArtifactState from '$lib/components/ArtifactState.svelte'
 
   let sight = {}
   let player = {
@@ -11,6 +12,7 @@
     undoneTask: null,
     lastTask: null,
     unlocked: '',
+    inventory: '',
   }
   $: undoneTaskSummary = getUndoneTaskSummary(player.undoneTask)
   $: lastTaskSummary = getLastTaskSummary(player.lastTask)
@@ -69,7 +71,7 @@
 
   const getLastTaskSummary = (task) => {
     if (!task) return ''
-    const errorMessage = !task.error ? ' 성공' : ' 실패: ' + task.error
+    const errorMessage = !task.error ? ' 성공' : ' 실패<br>' + task.error
     if (task.type === 'MOVE') {
       const step = parseInt(task.value)
       if (step > 0) return `앞으로 ${step}칸 이동` + errorMessage
@@ -125,6 +127,7 @@
 
   const handleCommunicate = () => {
     const message = prompt('조력자에게 전달할 한글 3글자 메시지를 적어주세요')
+    if (!message) return
     const korean = /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*$/
     if (message.length != 3) {
       alert('3글자가 아닙니다! 다시 시도해주세요')
@@ -139,12 +142,13 @@
 </script>
 
 <div class="container">
-  <div class="prompt">
-    <span>{lastTaskSummary}&nbsp;</span>
+  <div class="state">
+    <ArtifactState inventory={player.inventory} />
   </div>
-  <div class="sight">
-    <Sight {...sight} {player} />
+  <div class="prompt" style="height: 60px">
+    <span>{@html lastTaskSummary}&nbsp;</span>
   </div>
+  <Sight {...sight} {player} />
   <div class="prompt">
     <span>{undoneTaskSummary}&nbsp;</span>
   </div>
@@ -174,18 +178,34 @@
   .container {
     width: 100%;
     height: 100%;
-    background-color: gray;
+    background-color: black;
     display: flex;
     flex-direction: column;
   }
 
-  .prompt {
+  .state {
     font-weight: 700;
+    font-size: 18px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 8px;
+    background-color: #444;
+    border-radius: 32px;
+    margin: 4px;
+  }
+
+  .prompt {
     text-align: center;
+    font-weight: 700;
     font-size: 20px;
     padding: 8px;
     color: white;
     background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .controller {
