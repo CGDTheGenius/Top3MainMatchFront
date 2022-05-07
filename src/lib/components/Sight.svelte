@@ -47,6 +47,29 @@
         <svelte:component this={iconMap[item.type]} />
       </svg>
     {/each}
+    {#if cell.items.length > 1}
+      <svg
+        y={padding + unit * cell.x}
+        x={padding + unit * cell.y}
+        width={unit}
+        height={unit}
+        viewBox="0 0 100 100"
+      >
+        <text
+          x="50"
+          y="50"
+          dominant-baseline="middle"
+          text-anchor="middle"
+          fill="white"
+          stroke="black"
+          stroke-width="1"
+          font-weight="700"
+          font-size="30"
+          opacity="0.9"
+          >{cell.items.length}
+        </text>
+      </svg>
+    {/if}
   {/each}
   <!-- Horizontal lines -->
   {#each { length: size + 1 } as _, i}
