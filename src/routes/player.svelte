@@ -37,11 +37,11 @@
 
   onMount(() => {
     login()
-    fetchSight()
     fetchPlayer()
+    fetchSight()
     setInterval(() => {
-      fetchSight()
       fetchPlayer()
+      fetchSight()
     }, 5000)
   })
 

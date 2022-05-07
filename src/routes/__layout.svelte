@@ -38,7 +38,7 @@
   }
 
   * {
-    font-family: 'Nanum Gothic';
+    font-family: 'Nanum Barun Gothic';
   }
 
   h1 {

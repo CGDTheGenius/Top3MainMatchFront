@@ -10,7 +10,6 @@
 
   export let clickable = false
   export let cells = []
-  export let items = []
   export let hWalls = []
   export let vWalls = []
   export let players = []
