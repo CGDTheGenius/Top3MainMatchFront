@@ -14,7 +14,11 @@
 
   const fetchBoard = async () => {
     const res = await axios.get('board/view')
-    board = res.data
+    board = {
+      ...res.data,
+      hWalls: res.data.h_walls,
+      vWalls: res.data.v_walls,
+    }
   }
 
   const fetchPlayer = async () => {

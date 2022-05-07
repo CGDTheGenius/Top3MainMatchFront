@@ -14,8 +14,8 @@
     const res = await axios.get('/board/view')
     data = {
       ...res.data,
-      hWalls: [],
-      vWalls: [],
+      hWalls: res.data.h_walls,
+      vWalls: res.data.v_walls,
     }
   }
 
@@ -23,7 +23,7 @@
     const x = event.detail.x
     const y = event.detail.y
     if (isCellType(type)) {
-      await axios
+      axios
         .put(`/board/cells/${x}/${y}`, {
           type,
           x,
@@ -31,7 +31,7 @@
         })
         .finally(fetchBoard)
     } else {
-      await axios
+      axios
         .post(`/board/items/${x}/${y}`, {
           type,
           x,
@@ -41,14 +41,17 @@
     }
   }
 
-  const handleEditHorizontalWall = async (event) => {
-    await axios.post('/board/edit/h-wall', event.detail)
-    fetchBoard()
-  }
-
-  const handleEditVerticalWall = async (event) => {
-    await axios.post('/board/edit/v-wall', event.detail)
-    fetchBoard()
+  const handleEditWall = async (event) => {
+    const x = event.detail.x
+    const y = event.detail.y
+    axios
+      .put(`/board/walls/${type}/${x}/${y}`, {
+        type,
+        x,
+        y,
+        closed: !event.detail.closed,
+      })
+      .finally(fetchBoard)
   }
 
   onMount(() => {
@@ -63,8 +66,8 @@
     bind:type
     clickable={true}
     on:clickCell={handleEditCell}
-    on:clickHorizontalWall={handleEditHorizontalWall}
-    on:clickVerticalWall={handleEditVerticalWall}
+    on:clickHorizontalWall={handleEditWall}
+    on:clickVerticalWall={handleEditWall}
   />
   <LabelPanel bind:type controllable={true} />
 </div>

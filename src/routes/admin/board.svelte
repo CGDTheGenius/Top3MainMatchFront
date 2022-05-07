@@ -9,7 +9,10 @@
 
   const fetchBoard = async () => {
     const res = await axios.get('/board/view')
-    data = res.data
+    data = {
+      ...res.data,
+      hWalls: res.data.h_walls,
+      vWalls: res.data.v_walls,
   }
 
   onMount(() => {

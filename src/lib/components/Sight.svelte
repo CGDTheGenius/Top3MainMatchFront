@@ -23,6 +23,8 @@
   }
   export let items = []
   $: circledItems = items.map(getCircledItem)
+  export let hWalls = [[]]
+  export let vWalls = [[]]
 
   const padding = 0.05
   $: size = croppedCells.length
@@ -54,6 +56,7 @@
       y2={1 - padding}
       stroke="black"
       stroke-width={lineWidth}
+      stroke-linecap="round"
     />
   {/each}
   <!-- Vertical lines -->
@@ -65,6 +68,7 @@
       y2={padding + unit * i}
       stroke="black"
       stroke-width={lineWidth}
+      stroke-linecap="round"
     />
   {/each}
   <!-- Cells -->
@@ -79,6 +83,38 @@
           <svelte:component this={iconMap[item.type]} />
         </svg>
       {/each}
+    {/each}
+  {/each}
+  <!-- H-Walls -->
+  {#each hWalls as row, i}
+    {#each row as wall, j}
+      {#if wall.closed}
+        <line
+          y1={padding + unit * wall.x}
+          x1={padding + unit * wall.y}
+          y2={padding + unit * wall.x}
+          x2={padding + unit * (wall.y + 1)}
+          stroke="black"
+          stroke-width={lineWidth}
+          stroke-linecap="round"
+        />
+      {/if}
+    {/each}
+  {/each}
+  <!-- V-Walls -->
+  {#each vWalls as row, i}
+    {#each row as wall, j}
+      {#if wall.closed}
+        <line
+          y1={padding + unit * wall.x}
+          x1={padding + unit * wall.y}
+          y2={padding + unit * (wall.x + 1)}
+          x2={padding + unit * wall.y}
+          stroke="black"
+          stroke-width={lineWidth}
+          stroke-linecap="round"
+        />
+      {/if}
     {/each}
   {/each}
   <!-- Circle -->

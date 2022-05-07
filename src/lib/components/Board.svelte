@@ -1,7 +1,7 @@
 <script>
   import { createEventDispatcher } from 'svelte'
 
-  import { colorMap, iconMap } from '$lib/utils/utils'
+  import { iconMap } from '$lib/utils/utils'
   import RatioElement from './RatioElement.svelte'
 
   const dispatch = createEventDispatcher()
@@ -12,14 +12,6 @@
   export let hWalls = [[]]
   export let vWalls = [[]]
   export let type
-
-  $: {
-    cells.forEach((row) => {
-      row.forEach((cell) => {
-        cell.color = colorMap[cell.type] ?? 'gray'
-      })
-    })
-  }
 
   const padding = 0.05
   $: size = cells.length
@@ -42,7 +34,7 @@
 
   const handleClickHorizontalWall = async (cell) => {
     dispatch('clickHorizontalWall', {
-      closed: true,
+      closed: hWalls[cell.x][cell.y].closed,
       x: hoveredCell.x,
       y: hoveredCell.y,
     })
@@ -51,7 +43,7 @@
 
   const handleClickVerticalWall = async (cell) => {
     dispatch('clickVerticalWall', {
-      closed: true,
+      closed: vWalls[cell.x][cell.y].closed,
       x: hoveredCell.x,
       y: hoveredCell.y,
     })
@@ -71,6 +63,7 @@
           y2={1 - padding}
           stroke="black"
           stroke-width={lineWidth}
+          stroke-linecap="round"
         />
       {/each}
       <!-- Vertical lines -->
@@ -82,6 +75,7 @@
           y2={padding + unit * i}
           stroke="black"
           stroke-width={lineWidth}
+          stroke-linecap="round"
         />
       {/each}
       <!-- Cells -->
@@ -123,6 +117,7 @@
               x2={padding + unit * (wall.y + 1)}
               stroke="black"
               stroke-width={lineWidth}
+              stroke-linecap="round"
             />
           {/if}
         {/each}
@@ -138,6 +133,7 @@
               x2={padding + unit * wall.y}
               stroke="black"
               stroke-width={lineWidth}
+              stroke-linecap="round"
             />
           {/if}
         {/each}
@@ -153,6 +149,7 @@
             x2={padding + unit * (hoveredCell.y + 1)}
             stroke="#44AAFFAA"
             stroke-width={lineWidth}
+            stroke-linecap="round"
           />
           <rect
             y={padding + unit * hoveredCell.x}
@@ -170,6 +167,7 @@
             x2={padding + unit * hoveredCell.y}
             stroke="#44AAFFAA"
             stroke-width={lineWidth}
+            stroke-linecap="round"
           />
           <rect
             y={padding + unit * hoveredCell.x}

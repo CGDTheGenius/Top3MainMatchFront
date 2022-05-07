@@ -10,6 +10,8 @@ import SandCell from '$lib/components/cells/SandCell.svelte'
 import TowerCell from '$lib/components/cells/TowerCell.svelte'
 import TreeCell from '$lib/components/cells/TreeCell.svelte'
 import WaterCell from '$lib/components/cells/WaterCell.svelte'
+import HorizontalWall from '$lib/components/walls/HorizontalWall.svelte'
+import VerticalWall from '$lib/components/walls/VerticalWall.svelte'
 
 export const cellTypeList = [
   { type: 'BLANK', label: '빈칸', iconComponent: BlankCell },
@@ -18,6 +20,11 @@ export const cellTypeList = [
   { type: 'SAND', label: '모래', iconComponent: SandCell },
   { type: 'ROCK', label: '바위', iconComponent: RockCell },
   { type: 'GRASS', label: '풀', iconComponent: GrassCell },
+]
+
+export const wallTypeList = [
+  { type: 'H_WALL', label: '수평벽', iconComponent: HorizontalWall },
+  { type: 'V_WALL', label: '수직벽', iconComponent: VerticalWall },
 ]
 
 export const itemTypeList = [
@@ -30,6 +37,7 @@ export const itemTypeList = [
 ]
 
 export const isCellType = (type) => cellTypeList.find((cell) => cell.type === type)
+export const isWallType = (type) => wallTypeList.find((wall) => wall.type === type)
 export const isItemType = (type) => itemTypeList.find((item) => item.type === type)
 
 const _iconMap = {}
