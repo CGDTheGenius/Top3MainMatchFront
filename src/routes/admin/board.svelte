@@ -29,7 +29,7 @@
     setInterval(() => {
       fetchBoard()
       fetchPlayers()
-    }, 10000)
+    }, 2000)
   })
 </script>
 

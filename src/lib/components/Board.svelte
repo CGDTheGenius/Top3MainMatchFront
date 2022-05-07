@@ -1,23 +1,32 @@
 <script>
   import { createEventDispatcher } from 'svelte'
 
-  import { iconMap } from '$lib/utils/utils'
+  import { getDegree, iconMap } from '$lib/utils/utils'
   import RatioElement from './RatioElement.svelte'
   import Player from './Player.svelte'
-import ItemCount from './ItemCount.svelte';
+  import ItemCount from './ItemCount.svelte'
 
   const dispatch = createEventDispatcher()
 
   export let clickable = false
-  export let cells = [[]]
+  export let cells = []
   export let items = []
-  export let hWalls = [[]]
-  export let vWalls = [[]]
+  export let hWalls = []
+  export let vWalls = []
   export let players = []
   export let type
 
   const padding = 0.05
-  $: size = cells.length
+  $: size = Math.max(
+    Math.max.apply(
+      null,
+      cells.map((c) => c.x)
+    ),
+    Math.max.apply(
+      null,
+      cells.map((c) => c.y)
+    )
+  )
   $: unit = (1 - padding * 2) / size
   $: lineWidth = unit * 0.02
   $: wallWidth = lineWidth * 5
@@ -38,7 +47,7 @@ import ItemCount from './ItemCount.svelte';
 
   const handleClickHorizontalWall = async (cell) => {
     dispatch('clickHorizontalWall', {
-      closed: hWalls[cell.x][cell.y].closed,
+      closed: hWalls.find((wall) => wall.x === cell.x && wall.y === cell.y).closed,
       x: hoveredCell.x,
       y: hoveredCell.y,
     })
@@ -47,7 +56,7 @@ import ItemCount from './ItemCount.svelte';
 
   const handleClickVerticalWall = async (cell) => {
     dispatch('clickVerticalWall', {
-      closed: vWalls[cell.x][cell.y].closed,
+      closed: vWalls.find((wall) => wall.x === cell.x && wall.y === cell.y).closed,
       x: hoveredCell.x,
       y: hoveredCell.y,
     })
@@ -59,38 +68,36 @@ import ItemCount from './ItemCount.svelte';
   <RatioElement>
     <svg class="board-svg" viewBox="0 0 1 1">
       <!-- Cells -->
-      {#each cells as row, i}
-        {#each row as cell, j}
+      {#each cells as cell, j}
+        <svg
+          y={padding + unit * cell.x}
+          x={padding + unit * cell.y}
+          width={unit}
+          height={unit}
+          on:focus|preventDefault={() => handleHoverCell(cell)}
+          on:mouseover|preventDefault={() => handleHoverCell(cell)}
+        >
+          <svelte:component this={iconMap[cell.type]} />
+        </svg>
+        <!-- Items -->
+        {#each cell.items.slice(0, 1) as item}
           <svg
-            y={padding + unit * cell.x}
-            x={padding + unit * cell.y}
+            y={padding + unit * item.x}
+            x={padding + unit * item.y}
             width={unit}
             height={unit}
-            on:focus|preventDefault={() => handleHoverCell(cell)}
-            on:mouseover|preventDefault={() => handleHoverCell(cell)}
+            on:focus|preventDefault={() => handleHoverCell(item)}
+            on:mouseover|preventDefault={() => handleHoverCell(item)}
           >
-            <svelte:component this={iconMap[cell.type]} />
+            <svelte:component this={iconMap[item.type]} />
           </svg>
-          <!-- Items -->
-          {#each cell.items.slice(0, 1) as item}
-            <svg
-              y={padding + unit * item.x}
-              x={padding + unit * item.y}
-              width={unit}
-              height={unit}
-              on:focus|preventDefault={() => handleHoverCell(item)}
-              on:mouseover|preventDefault={() => handleHoverCell(item)}
-            >
-              <svelte:component this={iconMap[item.type]} />
-            </svg>
-          {/each}
-          <!-- Item count -->
-          {#if cell.items.length > 1}
-            <svg y={padding + unit * cell.x} x={padding + unit * cell.y} width={unit} height={unit}>
-              <ItemCount count={cell.items.length} />
-            </svg>
-          {/if}
         {/each}
+        <!-- Item count -->
+        {#if cell.items.length > 1}
+          <svg y={padding + unit * cell.x} x={padding + unit * cell.y} width={unit} height={unit}>
+            <ItemCount count={cell.items.length} />
+          </svg>
+        {/if}
       {/each}
       <!-- Horizontal lines -->
       {#each { length: size + 1 } as _, i}
@@ -116,43 +123,80 @@ import ItemCount from './ItemCount.svelte';
           stroke-linecap="round"
         />
       {/each}
-      <!-- H-Walls -->
-      {#each hWalls as row, i}
-        {#each row as wall, j}
-          {#if wall.closed}
-            <line
-              y1={padding + unit * wall.x}
-              x1={padding + unit * wall.y}
-              y2={padding + unit * wall.x}
-              x2={padding + unit * (wall.y + 1)}
-              stroke="black"
-              stroke-width={wallWidth}
-              stroke-linecap="round"
-            />
-          {/if}
+      <!-- Artifact Walls -->
+      {#each cells as cell, i}
+        {#each cell.items as item}
+          <line
+            y1={padding + unit * item.x}
+            x1={padding + unit * item.y}
+            y2={padding + unit * (item.x + 1)}
+            x2={padding + unit * item.y}
+            stroke="#843"
+            stroke-width={wallWidth}
+            stroke-linecap="round"
+          />
+          <line
+            y1={padding + unit * item.x}
+            x1={padding + unit * (item.y + 1)}
+            y2={padding + unit * (item.x + 1)}
+            x2={padding + unit * (item.y + 1)}
+            stroke="#843"
+            stroke-width={wallWidth}
+            stroke-linecap="round"
+          />
+          <line
+            y1={padding + unit * (item.x + 1)}
+            x1={padding + unit * item.y}
+            y2={padding + unit * (item.x + 1)}
+            x2={padding + unit * (item.y + 1)}
+            stroke="#843"
+            stroke-width={wallWidth}
+            stroke-linecap="round"
+          />
+          <line
+            y1={padding + unit * item.x}
+            x1={padding + unit * item.y}
+            y2={padding + unit * item.x}
+            x2={padding + unit * (item.y + 1)}
+            stroke="#843"
+            stroke-width={wallWidth}
+            stroke-linecap="round"
+          />
         {/each}
       {/each}
+      <!-- H-Walls -->
+      {#each hWalls as wall, j}
+        {#if wall.closed}
+          <line
+            y1={padding + unit * wall.x}
+            x1={padding + unit * wall.y}
+            y2={padding + unit * wall.x}
+            x2={padding + unit * (wall.y + 1)}
+            stroke="black"
+            stroke-width={wallWidth}
+            stroke-linecap="round"
+          />
+        {/if}
+      {/each}
       <!-- V-Walls -->
-      {#each vWalls as row, i}
-        {#each row as wall, j}
-          {#if wall.closed}
-            <line
-              y1={padding + unit * wall.x}
-              x1={padding + unit * wall.y}
-              y2={padding + unit * (wall.x + 1)}
-              x2={padding + unit * wall.y}
-              stroke="black"
-              stroke-width={wallWidth}
-              stroke-linecap="round"
-            />
-          {/if}
-        {/each}
+      {#each vWalls as wall, j}
+        {#if wall.closed}
+          <line
+            y1={padding + unit * wall.x}
+            x1={padding + unit * wall.y}
+            y2={padding + unit * (wall.x + 1)}
+            x2={padding + unit * wall.y}
+            stroke="black"
+            stroke-width={wallWidth}
+            stroke-linecap="round"
+          />
+        {/if}
       {/each}
 
       <!-- Players -->
       {#each players as player}
         <svg y={padding + unit * player.x} x={padding + unit * player.y} width={unit} height={unit}>
-          <Player color={player.color} />
+          <Player color={player.color} degree={getDegree(player.dx, player.dy)} />
         </svg>
       {/each}
 

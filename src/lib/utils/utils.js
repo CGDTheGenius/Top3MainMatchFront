@@ -65,3 +65,11 @@ export function increase_brightness(hex, percent) {
     (0 | ((1 << 8) + b + ((256 - b) * percent) / 100)).toString(16).substr(1)
   )
 }
+
+export const getDegree = (dx, dy) => {
+  if (dx == -1) return 0
+  if (dx == 1) return 180
+  if (dy == -1) return 270
+  if (dy == 1) return 90
+  return 0
+}

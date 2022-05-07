@@ -23,13 +23,13 @@
     const x = event.detail.x
     const y = event.detail.y
     if (isCellType(type)) {
-      axios
-        .put(`/board/cells/${x}/${y}`, {
-          type,
-          x,
-          y,
-        })
-        .finally(fetchBoard)
+      axios.put(`/board/cells/${x}/${y}`, {
+        type,
+        x,
+        y,
+      })
+      data.cells.find((cell) => cell.x === x && cell.y === y).type = type
+      data = data
     } else {
       axios
         .post(`/board/items/${x}/${y}`, {
@@ -44,14 +44,19 @@
   const handleEditWall = async (event) => {
     const x = event.detail.x
     const y = event.detail.y
-    axios
-      .put(`/board/walls/${type}/${x}/${y}`, {
-        type,
-        x,
-        y,
-        closed: !event.detail.closed,
-      })
-      .finally(fetchBoard)
+    if (type === 'H_WALL') {
+      data.hWalls.find((wall) => wall.x === x && wall.y === y).closed = !event.detail.closed
+    } else {
+      data.vWalls.find((wall) => wall.x === x && wall.y === y).closed = !event.detail.closed
+    }
+    data = data
+    axios.put(`/board/walls/${type}/${x}/${y}`, {
+      type,
+      x,
+      y,
+      closed: !event.detail.closed,
+    })
+    // .finally(fetchBoard)
   }
 
   onMount(() => {

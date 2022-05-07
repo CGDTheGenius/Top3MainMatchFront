@@ -1,13 +1,9 @@
 <script>
-  import { iconMap } from '$lib/utils/utils'
+  import { getDegree, iconMap } from '$lib/utils/utils'
   import ItemCount from './ItemCount.svelte'
   import Player from './Player.svelte'
 
-  export let player = {
-    x: 0,
-    y: 0,
-    unlocked: '',
-  }
+  export let player
   export let cells = []
   export let items = []
   $: circledItems = items.map((item) => getCircledItem(item, player))
@@ -94,6 +90,49 @@
       stroke-linecap="round"
     />
   {/each}
+  <!-- Artifact Walls -->
+  {#each cells as cell, i}
+    {#each cell.items as item}
+      {#if !player.unlocked.includes(item.type)}
+        <line
+          y1={padding + unit * (item.x - player.x + 1)}
+          x1={padding + unit * (item.y - player.y + 1)}
+          y2={padding + unit * (item.x - player.x + 1 + 1)}
+          x2={padding + unit * (item.y - player.y + 1)}
+          stroke="#843"
+          stroke-width={wallWidth}
+          stroke-linecap="round"
+        />
+        <line
+          y1={padding + unit * (item.x - player.x + 1)}
+          x1={padding + unit * (item.y - player.y + 1 + 1)}
+          y2={padding + unit * (item.x - player.x + 1 + 1)}
+          x2={padding + unit * (item.y - player.y + 1 + 1)}
+          stroke="#843"
+          stroke-width={wallWidth}
+          stroke-linecap="round"
+        />
+        <line
+          y1={padding + unit * (item.x - player.x + 1 + 1)}
+          x1={padding + unit * (item.y - player.y + 1)}
+          y2={padding + unit * (item.x - player.x + 1 + 1)}
+          x2={padding + unit * (item.y - player.y + 1 + 1)}
+          stroke="#843"
+          stroke-width={wallWidth}
+          stroke-linecap="round"
+        />
+        <line
+          y1={padding + unit * (item.x - player.x + 1)}
+          x1={padding + unit * (item.y - player.y + 1)}
+          y2={padding + unit * (item.x - player.x + 1)}
+          x2={padding + unit * (item.y - player.y + 1 + 1)}
+          stroke="#843"
+          stroke-width={wallWidth}
+          stroke-linecap="round"
+        />
+      {/if}
+    {/each}
+  {/each}
   <!-- H-Walls -->
   {#each hWalls as wall, j}
     {#if wall.closed}
@@ -122,52 +161,9 @@
       />
     {/if}
   {/each}
-  <!-- Artifact Walls -->
-  {#each cells as cell, i}
-    {#each cell.items as item}
-      {#if !player.unlocked.includes(item.type)}
-        <line
-          y1={padding + unit * (item.x - player.x + 1)}
-          x1={padding + unit * (item.y - player.y + 1)}
-          y2={padding + unit * (item.x - player.x + 1 + 1)}
-          x2={padding + unit * (item.y - player.y + 1)}
-          stroke="black"
-          stroke-width={wallWidth}
-          stroke-linecap="round"
-        />
-        <line
-          y1={padding + unit * (item.x - player.x + 1)}
-          x1={padding + unit * (item.y - player.y + 1 + 1)}
-          y2={padding + unit * (item.x - player.x + 1 + 1)}
-          x2={padding + unit * (item.y - player.y + 1 + 1)}
-          stroke="black"
-          stroke-width={wallWidth}
-          stroke-linecap="round"
-        />
-        <line
-          y1={padding + unit * (item.x - player.x + 1 + 1)}
-          x1={padding + unit * (item.y - player.y + 1)}
-          y2={padding + unit * (item.x - player.x + 1 + 1)}
-          x2={padding + unit * (item.y - player.y + 1 + 1)}
-          stroke="black"
-          stroke-width={wallWidth}
-          stroke-linecap="round"
-        />
-        <line
-          y1={padding + unit * (item.x - player.x + 1 + 1)}
-          x1={padding + unit * (item.y - player.y + 1)}
-          y2={padding + unit * (item.x - player.x + 1 + 1)}
-          x2={padding + unit * (item.y - player.y + 1 + 1)}
-          stroke="black"
-          stroke-width={wallWidth}
-          stroke-linecap="round"
-        />
-      {/if}
-    {/each}
-  {/each}
   <!-- Player -->
   <svg y={padding + unit * 1} x={padding + unit * 1} width={unit} height={unit}>
-    <Player color={player.color} />
+    <Player color={player.color} degree={getDegree(player.dx, player.dy)} />
   </svg>
   <!-- Other Players -->
   {#each others as other}
