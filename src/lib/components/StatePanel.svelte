@@ -1,5 +1,6 @@
 <script>
   import {
+    artifactList,
     getAssistantPrevTaskSummary,
     getAssistantUndoneTaskSummary,
     getPlayerPrevTaskSummary,
@@ -7,6 +8,7 @@
   } from '$lib/utils/utils'
 
   import { createEventDispatcher } from 'svelte'
+  import ArtifactCell from './artifacts/ArtifactCell.svelte'
 
   export let players = []
   export let assistants = []
@@ -46,6 +48,17 @@
       <div class="player-state-item">
         <div class="player-state-item__name">
           {player.username}
+        </div>
+        <div class="player-state-item__inventory">
+          {#each artifactList as artifact}
+            <div class="player-state-item__inventory-item">
+              <svelte:component
+                this={player.inventory.includes(artifact.type)
+                  ? artifact.iconComponent
+                  : ArtifactCell}
+              />
+            </div>
+          {/each}
         </div>
         <div class="player-state-item__task">
           - {getPlayerPrevTaskSummary(player.last_task)}
@@ -134,6 +147,19 @@
       &__name {
         font-size: 18px;
         font-weight: 700;
+      }
+
+      &__inventory {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        margin: 4px 0;
+
+        &-item {
+          width: 20px;
+          height: 20px;
+        }
       }
     }
   }

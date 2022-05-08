@@ -31,36 +31,42 @@
   $: lineWidth = unit * 0.02
   $: wallWidth = lineWidth * 5
 
-  $: hoveredCell = null
+  $: hoveredCellPos = null
 
-  const handleHoverCell = (cell) => {
-    hoveredCell = cell
+  const handleHoverCell = (e, cell) => {
+    hoveredCellPos = cell
+    if (e.buttons === 1 || e.buttons === 3) {
+      if (type.startsWith('H_WALL')) {
+        handleClickHorizontalWall(cell)
+      } else if (type.startsWith('V_WALL')) {
+        handleClickVerticalWall(cell)
+      } else {
+        handleClickCell(cell)
+      }
+    }
   }
 
   const handleClickCell = async (cell) => {
     dispatch('clickCell', {
-      x: hoveredCell.x,
-      y: hoveredCell.y,
+      x: cell.x,
+      y: cell.y,
     })
-    hoveredCell = null
   }
 
   const handleClickHorizontalWall = async (cell) => {
     dispatch('clickHorizontalWall', {
       closed: hWalls.find((wall) => wall.x === cell.x && wall.y === cell.y).closed,
-      x: hoveredCell.x,
-      y: hoveredCell.y,
+      x: cell.x,
+      y: cell.y,
     })
-    hoveredCell = null
   }
 
   const handleClickVerticalWall = async (cell) => {
     dispatch('clickVerticalWall', {
       closed: vWalls.find((wall) => wall.x === cell.x && wall.y === cell.y).closed,
-      x: hoveredCell.x,
-      y: hoveredCell.y,
+      x: cell.x,
+      y: cell.y,
     })
-    hoveredCell = null
   }
 </script>
 
@@ -69,27 +75,13 @@
     <svg class="board-svg" viewBox="0 0 1 1">
       <!-- Cells -->
       {#each cells as cell, j}
-        <svg
-          y={padding + unit * cell.x}
-          x={padding + unit * cell.y}
-          width={unit}
-          height={unit}
-          on:focus|preventDefault={() => handleHoverCell(cell)}
-          on:mouseover|preventDefault={() => handleHoverCell(cell)}
-        >
+        <svg y={padding + unit * cell.x} x={padding + unit * cell.y} width={unit} height={unit}>
           <svelte:component this={iconMap[cell.type]} />
         </svg>
         <!-- Items -->
         {#if !simple}
           {#each cell.items.slice(0, 1) as item}
-            <svg
-              y={padding + unit * item.x}
-              x={padding + unit * item.y}
-              width={unit}
-              height={unit}
-              on:focus|preventDefault={() => handleHoverCell(item)}
-              on:mouseover|preventDefault={() => handleHoverCell(item)}
-            >
+            <svg y={padding + unit * item.x} x={padding + unit * item.y} width={unit} height={unit}>
               <svelte:component this={iconMap[item.type]} />
             </svg>
           {/each}
@@ -215,54 +207,24 @@
         {/each}
       {/if}
 
-      <!-- Hovered -->
-      {#if clickable && hoveredCell}
-        {#if type.startsWith('H_WALL')}
-          <line
-            y1={padding + unit * hoveredCell.x}
-            x1={padding + unit * hoveredCell.y}
-            y2={padding + unit * hoveredCell.x}
-            x2={padding + unit * (hoveredCell.y + 1)}
-            stroke="#44AAFFAA"
-            stroke-width={wallWidth}
-            stroke-linecap="round"
-          />
-          <rect
-            y={padding + unit * hoveredCell.x}
-            x={padding + unit * hoveredCell.y}
-            width={unit}
-            height={unit}
-            fill="transparent"
-            on:click|preventDefault={() => handleClickHorizontalWall(hoveredCell)}
-          />
-        {:else if type.startsWith('V_WALL')}
-          <line
-            y1={padding + unit * (hoveredCell.x + 1)}
-            x1={padding + unit * hoveredCell.y}
-            y2={padding + unit * hoveredCell.x}
-            x2={padding + unit * hoveredCell.y}
-            stroke="#44AAFFAA"
-            stroke-width={wallWidth}
-            stroke-linecap="round"
-          />
-          <rect
-            y={padding + unit * hoveredCell.x}
-            x={padding + unit * hoveredCell.y}
-            width={unit}
-            height={unit}
-            fill="transparent"
-            on:click|preventDefault={() => handleClickVerticalWall(hoveredCell)}
-          />
-        {:else}
-          <rect
-            y={padding + unit * hoveredCell.x}
-            x={padding + unit * hoveredCell.y}
-            width={unit}
-            height={unit}
-            fill="#44AAFF66"
-            on:click|preventDefault={() => handleClickCell(hoveredCell)}
-          />
-        {/if}
+      <!-- Hover -->
+      {#if clickable}
+        {#each { length: size + 1 } as _, i}
+          {#each { length: size + 1 } as _, j}
+            <rect
+              y={padding + unit * i}
+              x={padding + unit * j}
+              width={unit}
+              height={unit}
+              fill={hoveredCellPos && hoveredCellPos.x == i && hoveredCellPos.y == j
+                ? '#44AAFF66'
+                : 'transparent'}
+              on:focus|preventDefault={(e) => handleHoverCell(e, { x: i, y: j })}
+              on:mouseover|preventDefault={(e) => handleHoverCell(e, { x: i, y: j })}
+              on:mousedown|preventDefault={(e) => handleHoverCell(e, { x: i, y: j })}
+            />
+          {/each}
+        {/each}
       {/if}
     </svg>
   </RatioElement>
