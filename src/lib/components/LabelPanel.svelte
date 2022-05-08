@@ -1,6 +1,6 @@
 <script>
   import LabelList from './LabelList.svelte'
-  import { cellTypeList, itemTypeList, wallTypeList } from '$lib/utils/utils'
+  import { cellTypeList, fakeWallTypeList, itemTypeList, wallTypeList } from '$lib/utils/utils'
 
   export let type = null
   export let controllable = false
@@ -15,9 +15,10 @@
     </div>
   {/if}
   <div class="type-selector">
+    <LabelList groupName="지형" labelList={cellTypeList} bind:type clickable={controllable} />
     <LabelList
-      groupName="지형"
-      labelList={cellTypeList.concat(wallTypeList)}
+      groupName="벽"
+      labelList={wallTypeList.concat(fakeWallTypeList)}
       bind:type
       clickable={controllable}
     />

@@ -14,6 +14,7 @@
   export let vWalls = []
   export let players = []
   export let type
+  export let simple = true
 
   const padding = 0.05
   $: size = Math.max(
@@ -79,23 +80,25 @@
           <svelte:component this={iconMap[cell.type]} />
         </svg>
         <!-- Items -->
-        {#each cell.items.slice(0, 1) as item}
-          <svg
-            y={padding + unit * item.x}
-            x={padding + unit * item.y}
-            width={unit}
-            height={unit}
-            on:focus|preventDefault={() => handleHoverCell(item)}
-            on:mouseover|preventDefault={() => handleHoverCell(item)}
-          >
-            <svelte:component this={iconMap[item.type]} />
-          </svg>
-        {/each}
-        <!-- Item count -->
-        {#if cell.items.length > 1}
-          <svg y={padding + unit * cell.x} x={padding + unit * cell.y} width={unit} height={unit}>
-            <ItemCount count={cell.items.length} />
-          </svg>
+        {#if !simple}
+          {#each cell.items.slice(0, 1) as item}
+            <svg
+              y={padding + unit * item.x}
+              x={padding + unit * item.y}
+              width={unit}
+              height={unit}
+              on:focus|preventDefault={() => handleHoverCell(item)}
+              on:mouseover|preventDefault={() => handleHoverCell(item)}
+            >
+              <svelte:component this={iconMap[item.type]} />
+            </svg>
+          {/each}
+          <!-- Item count -->
+          {#if cell.items.length > 1}
+            <svg y={padding + unit * cell.x} x={padding + unit * cell.y} width={unit} height={unit}>
+              <ItemCount count={cell.items.length} />
+            </svg>
+          {/if}
         {/if}
       {/each}
       <!-- Horizontal lines -->
@@ -123,46 +126,48 @@
         />
       {/each}
       <!-- Artifact Walls -->
-      {#each cells as cell, i}
-        {#each cell.items as item}
-          <line
-            y1={padding + unit * item.x}
-            x1={padding + unit * item.y}
-            y2={padding + unit * (item.x + 1)}
-            x2={padding + unit * item.y}
-            stroke="#843"
-            stroke-width={wallWidth}
-            stroke-linecap="round"
-          />
-          <line
-            y1={padding + unit * item.x}
-            x1={padding + unit * (item.y + 1)}
-            y2={padding + unit * (item.x + 1)}
-            x2={padding + unit * (item.y + 1)}
-            stroke="#843"
-            stroke-width={wallWidth}
-            stroke-linecap="round"
-          />
-          <line
-            y1={padding + unit * (item.x + 1)}
-            x1={padding + unit * item.y}
-            y2={padding + unit * (item.x + 1)}
-            x2={padding + unit * (item.y + 1)}
-            stroke="#843"
-            stroke-width={wallWidth}
-            stroke-linecap="round"
-          />
-          <line
-            y1={padding + unit * item.x}
-            x1={padding + unit * item.y}
-            y2={padding + unit * item.x}
-            x2={padding + unit * (item.y + 1)}
-            stroke="#843"
-            stroke-width={wallWidth}
-            stroke-linecap="round"
-          />
+      {#if !simple}
+        {#each cells as cell, i}
+          {#each cell.items as item}
+            <line
+              y1={padding + unit * item.x}
+              x1={padding + unit * item.y}
+              y2={padding + unit * (item.x + 1)}
+              x2={padding + unit * item.y}
+              stroke="#843"
+              stroke-width={wallWidth}
+              stroke-linecap="round"
+            />
+            <line
+              y1={padding + unit * item.x}
+              x1={padding + unit * (item.y + 1)}
+              y2={padding + unit * (item.x + 1)}
+              x2={padding + unit * (item.y + 1)}
+              stroke="#843"
+              stroke-width={wallWidth}
+              stroke-linecap="round"
+            />
+            <line
+              y1={padding + unit * (item.x + 1)}
+              x1={padding + unit * item.y}
+              y2={padding + unit * (item.x + 1)}
+              x2={padding + unit * (item.y + 1)}
+              stroke="#843"
+              stroke-width={wallWidth}
+              stroke-linecap="round"
+            />
+            <line
+              y1={padding + unit * item.x}
+              x1={padding + unit * item.y}
+              y2={padding + unit * item.x}
+              x2={padding + unit * (item.y + 1)}
+              stroke="#843"
+              stroke-width={wallWidth}
+              stroke-linecap="round"
+            />
+          {/each}
         {/each}
-      {/each}
+      {/if}
       <!-- H-Walls -->
       {#each hWalls as wall, j}
         {#if wall.closed}
@@ -172,6 +177,8 @@
             y2={padding + unit * wall.x}
             x2={padding + unit * (wall.y + 1)}
             stroke="black"
+            stroke-dasharray={wall.fake ? `${wallWidth * 1.1} ${wallWidth * 2.2}` : '1'}
+            stroke-dashoffset={wallWidth / 3}
             stroke-width={wallWidth}
             stroke-linecap="round"
           />
@@ -186,6 +193,8 @@
             y2={padding + unit * (wall.x + 1)}
             x2={padding + unit * wall.y}
             stroke="black"
+            stroke-dasharray={wall.fake ? `${wallWidth * 1.1} ${wallWidth * 2.2}` : '1'}
+            stroke-dashoffset={wallWidth / 3}
             stroke-width={wallWidth}
             stroke-linecap="round"
           />
@@ -193,15 +202,22 @@
       {/each}
 
       <!-- Players -->
-      {#each players as player}
-        <svg y={padding + unit * player.x} x={padding + unit * player.y} width={unit} height={unit}>
-          <Player color={player.color} degree={getDegree(player.dx, player.dy)} />
-        </svg>
-      {/each}
+      {#if !simple}
+        {#each players as player}
+          <svg
+            y={padding + unit * player.x}
+            x={padding + unit * player.y}
+            width={unit}
+            height={unit}
+          >
+            <Player color={player.color} degree={getDegree(player.dx, player.dy)} />
+          </svg>
+        {/each}
+      {/if}
 
       <!-- Hovered -->
       {#if clickable && hoveredCell}
-        {#if type === 'H_WALL'}
+        {#if type.startsWith('H_WALL')}
           <line
             y1={padding + unit * hoveredCell.x}
             x1={padding + unit * hoveredCell.y}
@@ -219,7 +235,7 @@
             fill="transparent"
             on:click|preventDefault={() => handleClickHorizontalWall(hoveredCell)}
           />
-        {:else if type === 'V_WALL'}
+        {:else if type.startsWith('V_WALL')}
           <line
             y1={padding + unit * (hoveredCell.x + 1)}
             x1={padding + unit * hoveredCell.y}

@@ -12,6 +12,10 @@ import WaterCell from '$lib/components/cells/WaterCell.svelte'
 import Tower from '$lib/components/Tower.svelte'
 import HorizontalWall from '$lib/components/walls/HorizontalWall.svelte'
 import VerticalWall from '$lib/components/walls/VerticalWall.svelte'
+import SoilCell from '$lib/components/cells/SoilCell.svelte'
+import GravelCell from '$lib/components/cells/GravelCell.svelte'
+import HorizontalFakeWall from '$lib/components/walls/HorizontalFakeWall.svelte'
+import VerticalFakeWall from '$lib/components/walls/VerticalFakeWall.svelte'
 
 export const cellTypeList = [
   { type: 'BLANK', label: '빈칸', iconComponent: BlankCell },
@@ -19,7 +23,9 @@ export const cellTypeList = [
   { type: 'WATER', label: '물', iconComponent: WaterCell },
   { type: 'SAND', label: '모래', iconComponent: SandCell },
   { type: 'ROCK', label: '바위', iconComponent: RockCell },
-  { type: 'GRASS', label: '풀', iconComponent: GrassCell },
+  { type: 'GRASS', label: '잔디', iconComponent: GrassCell },
+  { type: 'SOIL', label: '흙', iconComponent: SoilCell },
+  { type: 'GRAVEL', label: '자갈', iconComponent: GravelCell },
 ]
 
 export const wallTypeList = [
@@ -27,12 +33,17 @@ export const wallTypeList = [
   { type: 'V_WALL', label: '수직벽', iconComponent: VerticalWall },
 ]
 
+export const fakeWallTypeList = [
+  { type: 'H_WALL_FAKE', label: '가짜 수평벽', iconComponent: HorizontalFakeWall },
+  { type: 'V_WALL_FAKE', label: '가짜 수직벽', iconComponent: VerticalFakeWall },
+]
+
 export const itemTypeList = [
   { type: 'RED', label: '빨강 유물', iconComponent: RedArtifact },
-  { type: 'BLUE', label: '파랑 유물', iconComponent: BlueArtifact },
-  { type: 'GREEN', label: '초록 유물', iconComponent: GreenArtifact },
   { type: 'YELLOW', label: '노랑 유물', iconComponent: YellowArtifact },
-  { type: 'FAKE', label: '가짜 유물', iconComponent: FakeArtifact },
+  { type: 'GREEN', label: '초록 유물', iconComponent: GreenArtifact },
+  { type: 'BLUE', label: '파랑 유물', iconComponent: BlueArtifact },
+  { type: 'FAKE', label: '워프 트랩', iconComponent: FakeArtifact },
   { type: 'TOWER', label: '통신탑', iconComponent: Tower },
 ]
 
@@ -41,7 +52,8 @@ export const artifactList = itemTypeList.filter((item) =>
 )
 
 export const isCellType = (type) => cellTypeList.find((cell) => cell.type === type)
-export const isWallType = (type) => wallTypeList.find((wall) => wall.type === type)
+export const isWallType = (type) =>
+  wallTypeList.concat(fakeWallTypeList).find((wall) => wall.type === type)
 export const isItemType = (type) => itemTypeList.find((item) => item.type === type)
 
 const _iconMap = {}

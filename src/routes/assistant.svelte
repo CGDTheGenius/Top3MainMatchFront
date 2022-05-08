@@ -54,11 +54,11 @@
   }
 
   const handleRegisterTask = async (type, value) => {
-    player.undoneTask = {
+    assistant.undoneTask = {
       type,
       value,
     }
-    await axios.post('board/tasks/register', player.undoneTask)
+    await axios.post('board/tasks/register', assistant.undoneTask)
   }
 
   const handleCancel = () => {

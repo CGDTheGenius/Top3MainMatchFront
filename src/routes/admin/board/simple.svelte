@@ -6,7 +6,6 @@
   import { onMount } from 'svelte'
 
   let data = {}
-  let players = []
 
   const fetchBoard = async () => {
     const res = await axios.get('/board/view')
@@ -17,24 +16,17 @@
     }
   }
 
-  const fetchPlayers = async () => {
-    const res = await axios.get('/board/players')
-    players = res.data
-  }
-
   onMount(() => {
     login()
     fetchBoard()
-    fetchPlayers()
     setInterval(() => {
       fetchBoard()
-      fetchPlayers()
     }, 5000)
   })
 </script>
 
 <div class="container">
-  <Board {...data} {players} simple={false} />
+  <Board {...data} />
   <LabelPanel controllable={false} />
 </div>
 

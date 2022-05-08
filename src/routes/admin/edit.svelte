@@ -44,17 +44,22 @@
   const handleEditWall = async (event) => {
     const x = event.detail.x
     const y = event.detail.y
-    if (type === 'H_WALL') {
-      data.hWalls.find((wall) => wall.x === x && wall.y === y).closed = !event.detail.closed
+    if (type.startsWith('H_WALL')) {
+      const wall = data.hWalls.find((wall) => wall.x === x && wall.y === y)
+      wall.closed = !event.detail.closed
+      wall.fake = type.includes('FAKE')
     } else {
-      data.vWalls.find((wall) => wall.x === x && wall.y === y).closed = !event.detail.closed
+      const wall = data.vWalls.find((wall) => wall.x === x && wall.y === y)
+      wall.closed = !event.detail.closed
+      wall.fake = type.includes('FAKE')
     }
     data = data
-    axios.put(`/board/walls/${type}/${x}/${y}`, {
-      type,
+    axios.put(`/board/walls/${type.replace('_FAKE', '')}/${x}/${y}`, {
+      type: type.replace('_FAKE', ''),
       x,
       y,
       closed: !event.detail.closed,
+      fake: type.includes('FAKE'),
     })
     // .finally(fetchBoard)
   }
@@ -70,6 +75,7 @@
     {...data}
     bind:type
     clickable={true}
+    simple={false}
     on:clickCell={handleEditCell}
     on:clickHorizontalWall={handleEditWall}
     on:clickVerticalWall={handleEditWall}
