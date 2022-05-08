@@ -4,6 +4,7 @@
   import { onMount } from 'svelte'
   import login from '$lib/utils/login'
   import ArtifactState from '$lib/components/ArtifactState.svelte'
+  import { getPlayerPrevTaskSummary, getPlayerUndoneTaskSummary } from '$lib/utils/utils'
 
   let sight = {}
   let player = {
@@ -14,8 +15,8 @@
     unlocked: '',
     inventory: '',
   }
-  $: undoneTaskSummary = getUndoneTaskSummary(player.undoneTask)
-  $: lastTaskSummary = getLastTaskSummary(player.lastTask)
+  $: undoneTaskSummary = getPlayerUndoneTaskSummary(player.undoneTask)
+  $: lastTaskSummary = getPlayerPrevTaskSummary(player.lastTask)
 
   const fetchSight = async () => {
     const res = await axios.get('board/players/sight')
@@ -44,58 +45,6 @@
       fetchSight()
     }, 5000)
   })
-
-  const getUndoneTaskSummary = (task) => {
-    if (!task) return '동작을 예약해주세요'
-    if (task.type === 'MOVE') {
-      const step = parseInt(task.value)
-      if (step > 0) return `앞으로 ${step}칸 이동 예약됨`
-      else return `뒤로 ${Math.abs(step)}칸 이동 예약됨`
-    }
-    if (task.type === 'ROTATE') {
-      const step = parseInt(task.value)
-      if (step > 0) {
-        return `오른쪽으로 90도 회전 예약됨`
-      } else {
-        return `왼쪽으로 90도 회전 예약됨`
-      }
-    }
-    if (task.type === 'COMMUNICATE') {
-      return `조력자에게 '${task.value}' 전달 예약됨`
-    }
-    if (task.type === 'NOOP') {
-      return '아무 행동 안함'
-    }
-    return '알 수 없는 행동'
-  }
-
-  const getLastTaskSummary = (task) => {
-    if (!task) return ''
-    const errorMessage = !task.error ? ' 성공' : ' 실패<br>' + task.error
-    if (task.type === 'MOVE') {
-      const step = parseInt(task.value)
-      if (step > 0) return `앞으로 ${step}칸 이동` + errorMessage
-      else return `뒤로 ${Math.abs(step)}칸 이동` + errorMessage
-    }
-    if (task.type === 'ROTATE') {
-      const step = parseInt(task.value)
-      if (step > 0) {
-        return `오른쪽으로 90도 회전` + errorMessage
-      } else {
-        return `왼쪽으로 90도 회전` + errorMessage
-      }
-    }
-    if (task.type === 'COMMUNICATE') {
-      return `조력자에게 '${task.value}' 전달` + errorMessage
-    }
-    if (task.type === 'REVERSE_COMMUNICATE') {
-      return `조력자에게서 '${task.value}' 수신` + errorMessage
-    }
-    if (task.type === 'NOOP') {
-      return ''
-    }
-    return '알 수 없는 행동을 함'
-  }
 
   const handleRegisterTask = async (type, value) => {
     let undoneTask = player.undoneTask

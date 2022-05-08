@@ -7,8 +7,8 @@
     undoneTask: null,
     lastTask: null,
   }
-  $: undoneTaskSummary = getUndoneTaskSummary(assistant.undoneTask)
-  $: lastTaskSummary = getLastTaskSummary(assistant.lastTask)
+  $: undoneTaskSummary = getAssistantUndoneTaskSummary(assistant.undoneTask)
+  $: lastTaskSummary = getAssistantPrevTaskSummary(assistant.lastTask)
 
   const fetchAssistant = async () => {
     const res = await axios.get('board/assistants/detail')
@@ -26,32 +26,6 @@
       fetchAssistant()
     }, 5000)
   })
-
-  const getUndoneTaskSummary = (task) => {
-    if (!task) return '메시지를 예약해주세요'
-    if (task.type === 'COMMUNICATE') {
-      return `플레이어에게 '${task.value}' 전달 예약됨`
-    }
-    if (task.type === 'NOOP') {
-      return '메시지 보내지 않음'
-    }
-    return '알 수 없는 행동'
-  }
-
-  const getLastTaskSummary = (task) => {
-    if (!task) return ''
-    const errorMessage = !task.error ? ' 성공' : ' 실패<br>' + task.error
-    if (task.type === 'COMMUNICATE') {
-      return `플레이어에게 '${task.value}' 전달` + errorMessage
-    }
-    if (task.type === 'REVERSE_COMMUNICATE') {
-      return `플레이어에게서 '${task.value}' 수신` + errorMessage
-    }
-    if (task.type === 'NOOP') {
-      return ''
-    }
-    return '알 수 없는 행동을 함'
-  }
 
   const handleRegisterTask = async (type, value) => {
     assistant.undoneTask = {

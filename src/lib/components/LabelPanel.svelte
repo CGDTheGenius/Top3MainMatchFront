@@ -28,8 +28,8 @@
 
 <style lang="scss">
   .control-panel {
+    flex: 0 0 auto;
     background-color: silver;
-    height: 100%;
     display: flex;
     flex-direction: column;
     overflow-y: auto;

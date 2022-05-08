@@ -89,3 +89,81 @@ export const getDegree = (dx, dy) => {
   if (dy == 1) return 90
   return 0
 }
+
+export const getPlayerUndoneTaskSummary = (task) => {
+  if (!task) return '동작을 예약해주세요'
+  if (task.type === 'MOVE') {
+    const step = parseInt(task.value)
+    if (step > 0) return `앞으로 ${step}칸 이동 예약됨`
+    else return `뒤로 ${Math.abs(step)}칸 이동 예약됨`
+  }
+  if (task.type === 'ROTATE') {
+    const step = parseInt(task.value)
+    if (step > 0) {
+      return `오른쪽으로 90도 회전 예약됨`
+    } else {
+      return `왼쪽으로 90도 회전 예약됨`
+    }
+  }
+  if (task.type === 'COMMUNICATE') {
+    return `조력자에게 '${task.value}' 전달 예약됨`
+  }
+  if (task.type === 'NOOP') {
+    return '아무 행동 안함'
+  }
+  return '알 수 없는 행동'
+}
+
+export const getPlayerPrevTaskSummary = (task) => {
+  if (!task) return ''
+  const errorMessage = !task.error ? ' 성공' : ' 실패<br>' + task.error
+  if (task.type === 'MOVE') {
+    const step = parseInt(task.value)
+    if (step > 0) return `앞으로 ${step}칸 이동` + errorMessage
+    else return `뒤로 ${Math.abs(step)}칸 이동` + errorMessage
+  }
+  if (task.type === 'ROTATE') {
+    const step = parseInt(task.value)
+    if (step > 0) {
+      return `오른쪽으로 90도 회전` + errorMessage
+    } else {
+      return `왼쪽으로 90도 회전` + errorMessage
+    }
+  }
+  if (task.type === 'COMMUNICATE') {
+    return `조력자에게 '${task.value}' 전달` + errorMessage
+  }
+  if (task.type === 'REVERSE_COMMUNICATE') {
+    return `조력자에게서 '${task.value}' 수신` + errorMessage
+  }
+  if (task.type === 'NOOP') {
+    return ''
+  }
+  return '알 수 없는 행동을 함'
+}
+
+export const getAssistantUndoneTaskSummary = (task) => {
+  if (!task) return '메시지를 예약해주세요'
+  if (task.type === 'COMMUNICATE') {
+    return `플레이어에게 '${task.value}' 전달 예약됨`
+  }
+  if (task.type === 'NOOP') {
+    return '메시지 보내지 않음'
+  }
+  return '알 수 없는 행동'
+}
+
+export const getAssistantPrevTaskSummary = (task) => {
+  if (!task) return ''
+  const errorMessage = !task.error ? ' 성공' : ' 실패<br>' + task.error
+  if (task.type === 'COMMUNICATE') {
+    return `플레이어에게 '${task.value}' 전달` + errorMessage
+  }
+  if (task.type === 'REVERSE_COMMUNICATE') {
+    return `플레이어에게서 '${task.value}' 수신` + errorMessage
+  }
+  if (task.type === 'NOOP') {
+    return ''
+  }
+  return '알 수 없는 행동을 함'
+}
