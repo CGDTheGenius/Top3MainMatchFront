@@ -2,4 +2,4 @@
   import ArtifactCell from './ArtifactCell.svelte'
 </script>
 
-<ArtifactCell color="blue" />
+<ArtifactCell color="#14F" />
