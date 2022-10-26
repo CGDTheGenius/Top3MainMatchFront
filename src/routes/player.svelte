@@ -8,8 +8,8 @@
 
   let sight = {}
   let player = {
-    x: 0,
-    y: 0,
+    x: 99999999999999,
+    y: 99999999999999,
     undoneTask: null,
     lastTask: null,
     unlocked: '',
@@ -18,8 +18,11 @@
   $: undoneTaskSummary = getPlayerUndoneTaskSummary(player.undoneTask)
   $: lastTaskSummary = getPlayerPrevTaskSummary(player.lastTask)
 
+  let isFetchingSight = false
   const fetchSight = async () => {
-    const res = await axios.get('board/players/sight')
+    if (isFetchingSight) return
+    isFetchingSight = true
+    const res = await axios.get('board/players/sight').finally(() => (isFetchingSight = false))
     sight = {
       ...res.data,
       hWalls: res.data.h_walls,
@@ -27,8 +30,11 @@
     }
   }
 
+  let isFetchingPlayer = false
   const fetchPlayer = async () => {
-    const res = await axios.get('board/players/detail')
+    if (isFetchingPlayer) return
+    isFetchingPlayer = true
+    const res = await axios.get('board/players/detail').finally(() => (isFetchingPlayer = false))
     player = {
       ...res.data,
       undoneTask: res.data.undone_task,
@@ -40,10 +46,10 @@
     login()
     fetchPlayer()
     fetchSight()
-    setInterval(() => {
-      fetchPlayer()
-      fetchSight()
-    }, 5000)
+    // setInterval(() => {
+    //   fetchPlayer()
+    //   fetchSight()
+    // }, 5000)
   })
 
   const handleRegisterTask = async (type, value) => {
@@ -62,16 +68,16 @@
         value = null
       }
     }
-    undoneTask = {
+    await axios.post('board/tasks/register', {
       type,
       value,
-    }
-    player.undoneTask = undoneTask
-    await axios.post('board/tasks/register', undoneTask)
+    })
+    fetchPlayer()
+    fetchSight()
   }
 
-  const handleViewTaskList = async () => {
-    alert('TODO')
+  const handleCancelTask = async () => {
+    handleRegisterTask('NOOP', null)
   }
 
   const handleCommunicate = () => {
@@ -88,6 +94,11 @@
     }
     handleRegisterTask('COMMUNICATE', message)
   }
+
+  const handleRefresh = () => {
+    fetchPlayer()
+    fetchSight()
+  }
 </script>
 
 <div class="container">
@@ -100,10 +111,11 @@
   <Sight {...sight} {player} />
   <div class="prompt">
     <span>{undoneTaskSummary}&nbsp;</span>
+    <button class="refresh" on:click={handleRefresh}>새로고침</button>
   </div>
   <div class="controller">
     <div class="controller-row">
-      <button class="controller-row__item" on:click={handleViewTaskList}>기록</button>
+      <button class="controller-row__item" on:click={handleCancelTask}>취소</button>
       <button class="controller-row__item" on:click={() => handleRegisterTask('MOVE', 1)}
         >앞으로</button
       >
@@ -157,6 +169,19 @@
     justify-content: center;
   }
 
+  .refresh {
+    position: absolute;
+    right: 0;
+    margin-right: 4px;
+    border-radius: 16px;
+    border: none;
+    font-weight: 700;
+    background-color: white;
+    padding: 8px;
+    box-shadow: 2px 2px 2px 1px black;
+    cursor: pointer;
+  }
+
   .controller {
     flex: 1 0 0;
     display: flex;
@@ -179,10 +204,6 @@
         font-size: 24px;
         font-weight: 700;
         cursor: pointer;
-
-        &:hover {
-          background-color: lightgray;
-        }
       }
     }
   }

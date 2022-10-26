@@ -161,10 +161,6 @@
       />
     {/if}
   {/each}
-  <!-- Player -->
-  <svg y={padding + unit * 1} x={padding + unit * 1} width={unit} height={unit}>
-    <Player color={player.color} degree={getDegree(player.dx, player.dy)} />
-  </svg>
   <!-- Other Players -->
   {#each others as other}
     <svg
@@ -173,9 +169,13 @@
       width={unit}
       height={unit}
     >
-      <Player color={other.color} />
+      <Player color={other.color} degree={getDegree(other.dx, other.dy)} />
     </svg>
   {/each}
+  <!-- Player -->
+  <svg y={padding + unit * 1} x={padding + unit * 1} width={unit} height={unit}>
+    <Player color={player.color} degree={getDegree(player.dx, player.dy)} />
+  </svg>
   <!-- Circle -->
   <path
     d="M 0.5 {padding} A 0.1 0.1 0 0 1 0.5 {1 - padding} L 0.45 1 L 1 1 L 1 0 L 0.45 0"

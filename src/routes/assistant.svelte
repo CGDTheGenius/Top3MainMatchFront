@@ -2,6 +2,7 @@
   import axios from '$lib/utils/axios'
   import { onMount } from 'svelte'
   import login from '$lib/utils/login'
+  import { getAssistantPrevTaskSummary, getAssistantUndoneTaskSummary } from '$lib/utils/utils'
 
   let assistant = {
     undoneTask: null,
@@ -10,8 +11,11 @@
   $: undoneTaskSummary = getAssistantUndoneTaskSummary(assistant.undoneTask)
   $: lastTaskSummary = getAssistantPrevTaskSummary(assistant.lastTask)
 
+  let isFetching = false
   const fetchAssistant = async () => {
-    const res = await axios.get('board/assistants/detail')
+    if (isFetching) return
+    isFetching = true
+    const res = await axios.get('board/assistants/detail').finally(() => (isFetching = false))
     assistant = {
       ...res.data,
       undoneTask: res.data.undone_task,
@@ -22,9 +26,9 @@
   onMount(() => {
     login()
     fetchAssistant()
-    setInterval(() => {
-      fetchAssistant()
-    }, 5000)
+    // setInterval(() => {
+    //   fetchAssistant()
+    // }, 5000)
   })
 
   const handleRegisterTask = async (type, value) => {
@@ -33,6 +37,7 @@
       value,
     }
     await axios.post('board/tasks/register', assistant.undoneTask)
+    fetchAssistant()
   }
 
   const handleCancel = () => {
@@ -53,6 +58,10 @@
     }
     handleRegisterTask('COMMUNICATE', message)
   }
+
+  const handleRefresh = () => {
+    fetchAssistant()
+  }
 </script>
 
 <div class="container">
@@ -62,6 +71,7 @@
   <div style="flex-grow: 1" />
   <div class="prompt">
     <span>{undoneTaskSummary}&nbsp;</span>
+    <button class="refresh" on:click={handleRefresh}>새로고침</button>
   </div>
   <div class="controller">
     <div class="controller-row">
@@ -92,6 +102,19 @@
     justify-content: center;
   }
 
+  .refresh {
+    position: absolute;
+    right: 0;
+    margin-right: 4px;
+    border-radius: 16px;
+    border: none;
+    font-weight: 700;
+    background-color: white;
+    padding: 8px;
+    box-shadow: 2px 2px 2px 1px black;
+    cursor: pointer;
+  }
+
   .controller {
     flex: 1 0 0;
     display: flex;
@@ -114,10 +137,6 @@
         font-size: 24px;
         font-weight: 700;
         cursor: pointer;
-
-        &:hover {
-          background-color: lightgray;
-        }
       }
     }
   }

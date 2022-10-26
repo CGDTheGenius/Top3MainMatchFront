@@ -19,9 +19,6 @@
   onMount(() => {
     login()
     fetchBoard()
-    setInterval(() => {
-      fetchBoard()
-    }, 5000)
   })
 </script>
 

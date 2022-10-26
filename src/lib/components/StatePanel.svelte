@@ -46,22 +46,37 @@
   <div class="player-state-container">
     {#each players as player}
       <div class="player-state-item">
-        <div class="player-state-item__name">
-          {player.username}
-        </div>
-        <div class="player-state-item__inventory">
-          {#each artifactList as artifact}
-            <div class="player-state-item__inventory-item">
-              <svelte:component
-                this={player.inventory.includes(artifact.type)
-                  ? artifact.iconComponent
-                  : ArtifactCell}
-              />
+        <div class="player-state-item__header">
+          <div class="player-state-item__name">
+            {player.username}
+          </div>
+          <div class="player-state-item__artifacts">
+            <div class="player-state-item__unlocked">
+              {#each artifactList as artifact}
+                <div class="player-state-item__unlocked-item">
+                  <svelte:component
+                    this={player.unlocked.includes(artifact.type)
+                      ? artifact.iconComponent
+                      : ArtifactCell}
+                  />
+                </div>
+              {/each}
             </div>
-          {/each}
+            <div class="player-state-item__inventory">
+              {#each artifactList as artifact}
+                <div class="player-state-item__inventory-item">
+                  <svelte:component
+                    this={player.inventory.includes(artifact.type)
+                      ? artifact.iconComponent
+                      : ArtifactCell}
+                  />
+                </div>
+              {/each}
+            </div>
+          </div>
         </div>
         <div class="player-state-item__task">
-          - {getPlayerPrevTaskSummary(player.last_task)}
+          - {@html getPlayerPrevTaskSummary(player.last_task)}
         </div>
         <div class="player-state-item__task">
           - {getPlayerUndoneTaskSummary(player.undone_task)}
@@ -76,7 +91,7 @@
           {assistant.username}
         </div>
         <div class="assistant-state-item__task">
-          - {getAssistantPrevTaskSummary(assistant.last_task)}
+          - {@html getAssistantPrevTaskSummary(assistant.last_task)}
         </div>
         <div class="assistant-state-item__task">
           - {getAssistantUndoneTaskSummary(assistant.undone_task)}
@@ -89,7 +104,7 @@
 <style lang="scss">
   .state-panel {
     flex: 0 0 auto;
-    width: 200px;
+    width: 300px;
     background-color: rgb(163, 163, 163);
     display: flex;
     flex-direction: column;
@@ -141,20 +156,45 @@
     &-item {
       background-color: white;
       box-shadow: 2px 2px 2px 1px gray;
-      padding: 4px 8px;
+      padding: 12px;
       border-radius: 16px;
 
+      &__header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+
       &__name {
+        align-self: flex-start;
         font-size: 18px;
         font-weight: 700;
       }
 
+      &__artifacts {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      &__unlocked {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 8px;
+
+        &-item {
+          width: 20px;
+          height: 20px;
+        }
+      }
       &__inventory {
         display: flex;
         justify-content: space-around;
         align-items: center;
-        width: 100%;
-        margin: 4px 0;
+        gap: 8px;
 
         &-item {
           width: 20px;
@@ -174,12 +214,13 @@
     &-item {
       background-color: white;
       box-shadow: 2px 2px 2px 1px gray;
-      padding: 4px 8px;
+      padding: 12px;
       border-radius: 16px;
 
       &__name {
         font-size: 18px;
         font-weight: 700;
+        margin-bottom: 8px;
       }
     }
   }

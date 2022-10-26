@@ -37,7 +37,7 @@
     setInterval(() => {
       fetchPlayers()
       fetchAssistants()
-    }, 5000)
+    }, 2000)
   })
 
   const handleProcessAssistant = async () => {
